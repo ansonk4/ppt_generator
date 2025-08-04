@@ -23,6 +23,7 @@ class DataReader:
         filter_column: str | None = None,
         filter_value: str | int | None = None,
         normalize: bool = True,
+        exclude: float | int | None = None,
         return_dict: bool = False
     ) -> pd.DataFrame | dict:
         """Get the distribution of a specified column"""
@@ -30,6 +31,8 @@ class DataReader:
         if filter_column is not None and filter_value is not None:
             data = data[data[filter_column] == filter_value]
 
+        if exclude is not None:
+            data = data[data[column_name] != exclude]
         
         if column_name not in data.columns:
             print(f"Column {column_name} does not exist in the data.")
@@ -38,13 +41,13 @@ class DataReader:
         data = data.dropna(subset=[column_name])
 
         distribution = data[column_name].value_counts(normalize=normalize).to_dict()
-        distribution = {str(k): v for k, v in distribution.items()}
+        distribution = {str(float(k)) if isinstance(k, int) else str(k): v for k, v in distribution.items()}
 
         if return_dict:
             return distribution
 
         return pd.DataFrame(distribution.items(), columns=[column_name, 'distribution'])
-
+        
 
     def get_binary_distribution(
         self, 
