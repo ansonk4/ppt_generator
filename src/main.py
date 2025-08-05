@@ -8,6 +8,7 @@ from processors.after_dse_processor import AfterDSEProcessor
 from processors.major_processor import MajorProcessor
 from processors.job_processor import JobProcessor
 from processors.stem_processor import StemProcessor
+from processors.gba_processor import GBAProcessor
 
 @dataclass
 class Config:
@@ -26,6 +27,7 @@ class PresentationGenerator:
         self.major_processor = MajorProcessor(self.data_reader, self.ppt_generator)
         self.job_processor = JobProcessor(self.data_reader, self.ppt_generator)
         self.stem_processor = StemProcessor(self.data_reader, self.ppt_generator)
+        self.gba_processor = GBAProcessor(self.data_reader, self.ppt_generator)
 
     def generate_presentation(self):
 
@@ -34,6 +36,7 @@ class PresentationGenerator:
         self.major_processor.process_major_pages()
         self.job_processor.process_job_pages()
         self.stem_processor.process_stem_pages()
+        self.gba_processor.process_gba_pages()
 
         self.ppt_generator.add_image_header_footer_to_all_slides("img/logo.png")
         self.ppt_generator.save(self.output_path)

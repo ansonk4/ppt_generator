@@ -59,7 +59,7 @@ class PptGenerator:
     
     def add_textbox(
         self,
-        text: str,
+        text: list[str] | str,
         x: float = 1,
         y: float = 2,
         cx: float = 8,
@@ -67,6 +67,9 @@ class PptGenerator:
         font_size: int = 18,
     ):
         """Add a textbox to the current slide"""
+        if isinstance(text, list):
+            text = "\n".join(text)
+
         if self.current_slide is None:
             self.create_blank_slide()
 
