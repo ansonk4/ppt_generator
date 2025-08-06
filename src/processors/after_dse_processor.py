@@ -113,12 +113,15 @@ class AfterDSEProcessor:
     def _process_page56(self):
         self.ppt_generator.create_blank_slide("考生升學地方 (學校Banding) ")
 
-        bandings_location_dis = [self.data_reader.get_binary_distribution(
-            ["香港", "內地", "亞洲", "歐美澳"],
-            filter_column="Banding",
-            filter_value=banding,
-            return_dict=False
-        ).set_index('category').rename(columns={'distribution': f'Banding {banding}'}) for banding in [1, 2, 3]]
+        bandings_location_dis = [
+            self.data_reader.get_binary_distribution(
+                ["香港", "內地", "亞洲", "歐美澳"],
+                filter_column="Banding",
+                filter_value=banding,
+                return_dict=False
+            ).set_index('category').rename(columns={'distribution': banding}) 
+            for banding in ["Band 1", "Band 2", "Band 3"]
+        ]
 
         bandings_location_df = pd.concat(bandings_location_dis, axis=1)
         bandings_location_df = bandings_location_df.reset_index().rename(columns={"index": "category"})
@@ -126,7 +129,7 @@ class AfterDSEProcessor:
         self.ppt_generator.add_bar_chart(
             bandings_location_df,
             category_column='category',
-            value_columns=['Banding 1', 'Banding 2', 'Banding 3'],
+            value_columns=['Band 1', 'Band 2', 'Band 3'],
             title='2025 考生升學地方',
             to_percentage=True,
             x=1, y=2, cx=8, cy=4
@@ -169,8 +172,6 @@ class AfterDSEProcessor:
             "團體師友",
             "工作影子",
         ]
-        data_A, data_B = [], []
-
 
         data_A = [self.data_reader.get_col_distribution(col + "_A", normalize=True, return_dict=True) for col in cols]
         data_B = [
@@ -185,7 +186,7 @@ class AfterDSEProcessor:
         
         df_A = pd.DataFrame(data_A)
         df_A['category'] = cols
-        df_A = df_A.rename(columns={'1.0': 'distribution'})
+        df_A = df_A.rename(columns={'有': 'distribution'})
 
         df_B = pd.DataFrame(data_B)
         # Drop 0 and Normalize each row

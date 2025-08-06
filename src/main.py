@@ -12,7 +12,7 @@ from processors.gba_processor import GBAProcessor
 
 @dataclass
 class Config:
-    data_file: str = "data/data2.xlsx"
+    data_file: str = "data/2025data.xlsx"
     output_path: str = "output/presentation.pptx"
 
 

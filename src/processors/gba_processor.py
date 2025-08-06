@@ -14,8 +14,6 @@ class GBAProcessor:
         self.ppt_generator.create_blank_slide("大灣區政策\n對選科及就業取向影響")
 
         self.ppt_generator.create_blank_slide("DSE考生對大灣區政策了解")
-
-
         self.ppt_generator.add_textbox(
             [
                 "粵港澳大灣區（大灣區）包括香港、澳門兩個特別行政區，",
@@ -61,10 +59,10 @@ class GBAProcessor:
 
         data = pd.DataFrame(data, index=cols)
         data["index"] = cols
-        self.ppt_generator.add_bar_chart(
+        self.ppt_generator.add_bar_chart( 
             data,
             "index",
-            ["1.0"],
+            ["曾經 / 希望參與"],
             has_legend=False,
             to_percentage=True
         )
@@ -75,13 +73,13 @@ class GBAProcessor:
         stem_data = self.data_reader.get_combined_distribution(
             columns=cols,
             filtered_column="大灣區了解",
-            filter_value=1
+            filter_value="非常了解"
         )
 
         no_stem_data = self.data_reader.get_combined_distribution(
             columns=cols,
             filtered_column="大灣區了解",
-            filter_value=3
+            filter_value="完全不了解"
         )
 
         # 58: Math

@@ -21,7 +21,7 @@ class BackgroundProcessor:
         )
         
         gender = self.data_reader.get_col_distribution("性別", normalize=False, return_dict=True)
-        male_count, female_count = gender.get("1.0", 0), gender.get("2.0", 0)
+        male_count, female_count = gender.get("男", 0), gender.get("女", 0)
         if male_count > 0 and female_count > 0:
             if male_count >= female_count:
                 ratio = f"1 : {male_count / female_count:.2f}"

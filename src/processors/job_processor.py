@@ -16,7 +16,7 @@ class JobProcessor:
 
     def _process_page1(self):
         self.ppt_generator.create_blank_slide("未來工作地點")
-        col = "工作地方"
+        col = "未來工作地方"
         location = self.data_reader.get_col_distribution(col, normalize=True, return_dict=False)
 
         self.ppt_generator.add_pie_chart(
@@ -33,14 +33,14 @@ class JobProcessor:
             x=0.5, y=2, cx=5, cy=5,
         )
 
-    def _process_page_filtered_by_location(self, location: str,):
+    def _process_page_filtered_by_location(self, location: str):
         self.ppt_generator.create_blank_slide(f"未來工作地點：{location}")
 
         filter_map = {
-            "香港": 1.0,
-            "內地": 2.0,
-            "亞洲": 3.0,
-            "歐美澳": 4.0
+            "香港": "香港",
+            "內地": "內地",
+            "亞洲": "國外 - 亞洲",
+            "歐美澳": "國外 - 歐美澳"
         }
         gender = self.data_reader.get_col_distribution(
             "性別", normalize=True, return_dict=False,
@@ -133,7 +133,7 @@ class JobProcessor:
         ]
         dis = pd.DataFrame(dis, index=cols).reset_index()
 
-        target_col = "1.0"
+        target_col = "十分重要"
         dis = dis.sort_values(by=target_col, ascending=True)
 
         self.ppt_generator.add_bar_chart(
@@ -186,13 +186,13 @@ class JobProcessor:
         male_data = self.data_reader.get_combined_distribution(
             cols,
             filtered_column="性別",
-            filter_value=1
+            filter_value="男"
         )[:5]
 
         female_data = self.data_reader.get_combined_distribution(
            cols,
            filtered_column="性別",
-           filter_value=2
+           filter_value="女"
        )[:5]
 
         self.ppt_generator.add_bar_chart(

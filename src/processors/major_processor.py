@@ -47,13 +47,13 @@ class MajorProcessor:
         male_data = self.data_reader.get_combined_distribution(
             ["希望修讀", "希望修讀_A", "希望修讀_B"],
             filtered_column="性別",
-            filter_value=1
+            filter_value="男"
         )[:5]
 
         female_data = self.data_reader.get_combined_distribution(
            ["希望修讀", "希望修讀_A", "希望修讀_B"],
            filtered_column="性別",
-           filter_value=2
+           filter_value="女"
        )[:5]
 
         self.ppt_generator.add_bar_chart(
@@ -126,13 +126,13 @@ class MajorProcessor:
         male_data = self.data_reader.get_combined_distribution(
             ["不希望修讀", "不希望修讀_A", "不希望修讀_B"],
             filtered_column="性別",
-            filter_value=1
+            filter_value="男"
         )[:5]
 
         female_data = self.data_reader.get_combined_distribution(
             ["不希望修讀", "不希望修讀_A", "不希望修讀_B"],
            filtered_column="性別",
-           filter_value=2
+           filter_value="女"
        )[:5]
 
         self.ppt_generator.add_bar_chart(

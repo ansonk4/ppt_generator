@@ -44,13 +44,13 @@ class StemProcessor:
         stem_data = self.data_reader.get_combined_distribution(
             columns=cols,
             filtered_column="參加STEM",
-            filter_value=1
+            filter_value="有"
         )
 
         no_stem_data = self.data_reader.get_combined_distribution(
             columns=cols,
             filtered_column="參加STEM",
-            filter_value=2
+            filter_value="沒有"
         )
 
         # 58: Math
