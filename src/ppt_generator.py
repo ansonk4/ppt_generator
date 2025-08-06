@@ -59,32 +59,7 @@ class PptGenerator:
             footer_para = footer_frame.paragraphs[0]
             footer_para.font.size = Pt(12)
             footer_para.font.color.rgb = RGBColor(100, 100, 100)
-            footer_para.alignment = PP_ALIGN.CENTER
-    
-    def add_textbox(
-        self,
-        text: list[str] | str,
-        x: float = 1,
-        y: float = 2,
-        cx: float = 8,
-        cy: float = 5,
-        font_size: int = 18,
-    ):
-        """Add a textbox to the current slide"""
-        if isinstance(text, list):
-            text = "\n".join(text)
-
-        if self.current_slide is None:
-            self.create_blank_slide()
-
-        textbox = self.current_slide.shapes.add_textbox(Inches(x), Inches(y), Inches(cx), Inches(cy))
-        text_frame = textbox.text_frame
-        p = text_frame.add_paragraph()
-        p.text = text
-        p.font.size = Pt(font_size)
-        
-        p.font.color.rgb = RGBColor(0, 0, 0)  # Black color
-        p.alignment = PP_ALIGN.LEFT                     
+            footer_para.alignment = PP_ALIGN.CENTER           
 
 
     def add_bar_chart(
@@ -101,6 +76,7 @@ class PptGenerator:
         reserve_value_axis: bool = False,
         font_size: int = 14,
         small_title: bool = False,
+        color: str | tuple[int, int, int] = 'blue',
         x: float = 1,
         y: float = 2,
         cx: float = 8,
@@ -134,6 +110,25 @@ class PptGenerator:
         # Add chart to slide
         x, y, cx, cy = Inches(x), Inches(y), Inches(cx), Inches(cy)
         chart = self.current_slide.shapes.add_chart(chart_type, x, y, cx, cy, chart_data).chart
+
+        # Set bar colors if only one series and color is specified
+        if len(value_columns) == 1 and color:
+            series = chart.series[0]
+            for point in series.points:
+                point.format.fill.solid()
+                if isinstance(color, str):
+                    # Accept color as a hex string or color name
+                    if color.startswith('#') and len(color) == 7:
+                        rgb = RGBColor(int(color[1:3], 16), int(color[3:5], 16), int(color[5:7], 16))
+                    elif hasattr(RGBColor, color.upper()):
+                        rgb = getattr(RGBColor, color.upper())
+                    else:
+                        rgb = RGBColor(102, 204, 255)  # Default blue
+                elif isinstance(color, tuple) and len(color) == 3:
+                    rgb = RGBColor(*color)
+                else:
+                    rgb = RGBColor(102, 204, 255)
+                point.format.fill.fore_color.rgb = rgb
 
         # Set chart title
         if title is None:
@@ -349,6 +344,53 @@ class PptGenerator:
 
         chart.doughnut_hole_size = 90
 
+    def add_stacked_bar(
+            self,
+            data: pd.DataFrame,
+            category_column: str,
+            value_columns: list[str],
+            title: str,
+            legend_position: int = 2,  
+            font_size: int = 12,
+            x: float = 1,
+            y: float = 2,
+            cx: float = 8,
+            cy: float = 5,
+        ):
+        if self.current_slide is None:
+            self.create_blank_slide()
+
+        chart_data = CategoryChartData()
+        chart_data.categories = data[category_column].tolist()
+
+        for value_column in value_columns:
+            chart_data.add_series(value_column, data[value_column].tolist())
+
+        x, y, cx, cy = Inches(x), Inches(y), Inches(cx), Inches(cy)
+        chart = self.current_slide.shapes.add_chart(
+            XL_CHART_TYPE.BAR_STACKED, x, y, cx, cy, chart_data
+        ).chart
+
+        # Set chart title
+        chart.has_title = True
+        chart.chart_title.text_frame.text = title
+
+        chart.has_legend = True
+        chart.legend.position = legend_position
+        chart.legend.include_in_layout = False
+        chart.legend.font.size = Pt(font_size)
+        
+        chart.value_axis.tick_labels.number_format = '0%'
+        chart.value_axis.maximum_scale = 1
+        chart.value_axis.tick_labels.font.size = Pt(font_size)
+
+        chart.category_axis.tick_labels.font.size = Pt(font_size)
+
+        chart.plots[0].has_data_labels = True
+        data_labels = chart.plots[0].data_labels
+        data_labels.show_value = True
+        data_labels.number_format = '0.0%'
+        data_labels.font.size = Pt(font_size)
 
     def add_table(
         self,
@@ -406,56 +448,30 @@ class PptGenerator:
                 for paragraph in cell.text_frame.paragraphs:
                     paragraph.font.size = Pt(font_size)
 
-    
-
-    def add_stacked_bar(
+    def add_textbox(
         self,
-        data: pd.DataFrame,
-        category_column: str,
-        value_columns: list[str],
-        title: str,
-        legend_position: int = 2,  
-        font_size: int = 12,
+        text: list[str] | str,
         x: float = 1,
         y: float = 2,
         cx: float = 8,
         cy: float = 5,
+        font_size: int = 18,
     ):
+        """Add a textbox to the current slide"""
+        if isinstance(text, list):
+            text = "\n".join(text)
+
         if self.current_slide is None:
             self.create_blank_slide()
 
-        chart_data = CategoryChartData()
-        chart_data.categories = data[category_column].tolist()
-
-        for value_column in value_columns:
-            chart_data.add_series(value_column, data[value_column].tolist())
-
-        x, y, cx, cy = Inches(x), Inches(y), Inches(cx), Inches(cy)
-        chart = self.current_slide.shapes.add_chart(
-            XL_CHART_TYPE.BAR_STACKED, x, y, cx, cy, chart_data
-        ).chart
-
-        # Set chart title
-        chart.has_title = True
-        chart.chart_title.text_frame.text = title
-
-        chart.has_legend = True
-        chart.legend.position = legend_position
-        chart.legend.include_in_layout = False
-        chart.legend.font.size = Pt(font_size)
+        textbox = self.current_slide.shapes.add_textbox(Inches(x), Inches(y), Inches(cx), Inches(cy))
+        text_frame = textbox.text_frame
+        p = text_frame.add_paragraph()
+        p.text = text
+        p.font.size = Pt(font_size)
         
-        chart.value_axis.tick_labels.number_format = '0%'
-        chart.value_axis.maximum_scale = 1
-        chart.value_axis.tick_labels.font.size = Pt(font_size)
-
-        chart.category_axis.tick_labels.font.size = Pt(font_size)
-
-        chart.plots[0].has_data_labels = True
-        data_labels = chart.plots[0].data_labels
-        data_labels.show_value = True
-        data_labels.number_format = '0.0%'
-        data_labels.font.size = Pt(font_size)
-
+        p.font.color.rgb = RGBColor(0, 0, 0)  # Black color
+        p.alignment = PP_ALIGN.LEFT          
 
     def add_img(
         self, 

@@ -205,6 +205,7 @@ class JobProcessor:
             hide_y_axis=True,
             opposite_tick_labels=True,
             reserve_value_axis=True,
+            color=(102, 204, 255),
             x=0.5, cx=4, y=3, cy=4
         )
 
@@ -217,6 +218,7 @@ class JobProcessor:
             horizontal=True,
             hide_y_axis=True,
             opposite_tick_labels=True,
+            color=(255, 153, 204),
             x=5.5, cx=4, y=3, cy=4
         )
 

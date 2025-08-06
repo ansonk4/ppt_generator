@@ -14,7 +14,7 @@ class AfterDSEProcessor:
         self.ppt_generator.create_blank_slide("考生DSE後第一階段計劃")
 
         plan_dis = self.data_reader.get_binary_distribution(
-            ["大學", "副學士", "文憑", "高級文憑", "工作", "工作假期"],
+            ["大學", "副學士", "文憑", "高級文憑", "工作", "工作假期", "其他"],
             return_dict=False
         )
 
