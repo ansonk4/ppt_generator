@@ -28,7 +28,7 @@ class PresentationGenerator:
         self.job_processor = JobProcessor(self.data_reader, self.ppt_generator)
         self.stem_processor = StemProcessor(self.data_reader, self.ppt_generator)
         self.gba_processor = GBAProcessor(self.data_reader, self.ppt_generator)
-
+        
     def generate_presentation(self):
 
         self.background_processor.process_background_pages()
@@ -40,7 +40,6 @@ class PresentationGenerator:
 
         self.ppt_generator.add_image_header_footer_to_all_slides("img/logo.png")
         self.ppt_generator.save(self.output_path)
-
 
 
 if __name__ == "__main__":

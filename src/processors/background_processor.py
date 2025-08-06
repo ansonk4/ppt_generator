@@ -1,7 +1,7 @@
 import pandas as pd
 from data_reader import DataReader
 from ppt_generator import PptGenerator
-
+from pptx.enum.chart import XL_LEGEND_POSITION
 
 class BackgroundProcessor:
     def __init__(self, data_reader: DataReader, ppt_generator: PptGenerator):
@@ -15,7 +15,8 @@ class BackgroundProcessor:
         banding_dis = self.data_reader.get_col_distribution(col, normalize=False)
         self.ppt_generator.add_donut_chart(
             banding_dis, col, 'distribution',
-            to_percent=False, title="受訪學生", sort=False,
+            to_percent=False, title="受訪學生",
+            sort=False,
             x=1, y=2, cx=4, cy=4
         )
         
@@ -47,10 +48,11 @@ class BackgroundProcessor:
 
         col = "父母教育程度"
         edu_bg = self.data_reader.get_col_distribution(col, normalize=False)
-
         self.ppt_generator.add_donut_chart(
             edu_bg, col, "distribution",
             to_percent=True,
+            legend_position=XL_LEGEND_POSITION.BOTTOM,
+            title="父母教育程度",
             x=1, y=2, cx=4, cy=4
         )
 
@@ -58,7 +60,9 @@ class BackgroundProcessor:
         edu_bg = self.data_reader.get_col_distribution(col, normalize=False)
         self.ppt_generator.add_donut_chart(
             edu_bg, col, "distribution",
+            title="高中選修學科",
             to_percent=True,
+            legend_position=XL_LEGEND_POSITION.BOTTOM,
             x=5, y=2, cx=4, cy=4
         )
 
@@ -79,7 +83,10 @@ class BackgroundProcessor:
             category_column="score",
             value_columns=["中文成績", "英文成績", "數學成績"],
             title="2025考生中五成績",
-            x=1, y=2, cx=8, cy=4
+            to_percentage=True,
+            font_size=12,
+            has_legend=True,
+            x=1, y=1.5, cx=8, cy=5
         )
 
     def _process_background_page4(self):
@@ -89,9 +96,9 @@ class BackgroundProcessor:
         slide_width = self.ppt_generator.prs.slide_width
         slide_height = self.ppt_generator.prs.slide_height
 
-        cx, cy = 3, 4.5
+        cx, cy = 3, 5
         left_margin = 0.5
-        graph_y = 2
+        graph_y = 1.7
 
         chin = self.data_reader.get_combined_distribution(
             columns=["希望修讀", "希望修讀_A", "希望修讀_B"],
@@ -106,6 +113,7 @@ class BackgroundProcessor:
             title="中文25-49分",
             has_legend=False,
             to_percentage=True,
+            font_size=12,
             x=left_margin, y=graph_y, cx=cx, cy=cy
         )
 
@@ -121,6 +129,7 @@ class BackgroundProcessor:
             value_columns=["distribution"],
             title="英文25-49分",
             has_legend=False,
+            font_size=12,
             to_percentage=True,
             x=left_margin + cx, y=graph_y, cx=cx, cy=cy
         )
@@ -139,6 +148,7 @@ class BackgroundProcessor:
             title="數學25-49分",
             has_legend=False,
             to_percentage=True,
+            font_size=12,
             x=left_margin + cx * 2, y=graph_y, cx=cx, cy=cy
         )
 

@@ -3,7 +3,7 @@ import pandas as pd
 from pptx import Presentation
 from pptx.chart.data import CategoryChartData
 from pptx.enum.chart import XL_CHART_TYPE
-from pptx.enum.chart import XL_AXIS_CROSSES, XL_TICK_MARK, XL_TICK_LABEL_POSITION, XL_LABEL_POSITION
+from pptx.enum.chart import XL_AXIS_CROSSES, XL_TICK_MARK, XL_TICK_LABEL_POSITION, XL_LABEL_POSITION, XL_LEGEND_POSITION
 from pptx.util import Inches, Pt
 from pptx.enum.text import PP_ALIGN
 from pptx.dml.color import RGBColor
@@ -15,13 +15,17 @@ class PptGenerator:
     def __init__(self):
         self.prs = Presentation()
         self.current_slide = None
+    
 
     def create_blank_slide(self, slide_title: str | None = None):
         """Create a blank slide"""
         slide_layout = self.prs.slide_layouts[5]
         slide = self.prs.slides.add_slide(slide_layout)
+
         if slide_title:
             slide.shapes.title.text = slide_title
+            slide.shapes.title.text_frame.paragraphs[0].alignment = PP_ALIGN.LEFT
+            # slide.shapes.title.width = Inches(7)
         self.current_slide = slide
 
     def add_image_header_footer_to_all_slides(self, image_path: str):
@@ -90,11 +94,13 @@ class PptGenerator:
         value_columns: list[str],
         title: str = None,
         has_legend: bool = True,
-        legend_position: int = 2,  # 2 for bottom
+        legend_position: int = 2,  
         to_percentage: bool = False,
         hide_y_axis: bool = False,
         opposite_tick_labels: bool = False,
         reserve_value_axis: bool = False,
+        font_size: int = 14,
+        small_title: bool = False,
         x: float = 1,
         y: float = 2,
         cx: float = 8,
@@ -135,16 +141,27 @@ class PptGenerator:
         else:
             chart.has_title = True
             chart.chart_title.text_frame.text = title
+            if small_title:
+                title_run = chart.chart_title.text_frame.paragraphs[0].runs[0]
+                title_run.font.size = Pt(12)
+                title_run.font.bold = False
+                title_run.font.name = 'Calibri'
 
         chart.has_legend = has_legend
         if has_legend:
             chart.legend.position = legend_position
-            chart.legend.include_in_layout = False 
+            chart.legend.font.size = Pt(font_size)
+
+            if len(value_columns) == 1 or legend_position == XL_LEGEND_POSITION.BOTTOM:
+                chart.legend.include_in_layout = False
+            else:
+                chart.legend.include_in_layout = True
 
         chart.plots[0].has_data_labels = True
         data_labels = chart.plots[0].data_labels
         data_labels.show_value = True
         data_labels.show_category_name = False
+
 
         if to_percentage:
             data_labels.number_format = '0.0%'  # Format as percentage with two decimal places
@@ -162,6 +179,10 @@ class PptGenerator:
         if reserve_value_axis:
             chart.value_axis.reverse_order = True
 
+        # Change axis font size
+        chart.category_axis.tick_labels.font.size = Pt(font_size)
+        chart.value_axis.tick_labels.font.size = Pt(font_size)
+        data_labels.font.size = Pt(font_size)
 
         chart.value_axis.has_major_gridlines = False
         chart.category_axis.major_tick_mark = XL_TICK_MARK.NONE
@@ -179,6 +200,7 @@ class PptGenerator:
         has_legend: bool = True,
         legend_position: int = 2,  # 2 for bottom
         sort: bool = True,
+        font_size: int = 14,
         max_categories: int = 8,
         x: float = 1,
         y: float = 2,
@@ -226,10 +248,12 @@ class PptGenerator:
         if has_legend:
             chart.legend.position = legend_position
             chart.legend.include_in_layout = False 
+            chart.legend.font.size = Pt(font_size)
 
         chart.plots[0].has_data_labels = True
         data_labels = chart.plots[0].data_labels
         data_labels.show_value = True
+        data_labels.font.size = Pt(font_size)
 
         if to_percent:
             data_labels.show_percentage = True
@@ -249,7 +273,9 @@ class PptGenerator:
         legend_position: int = 2,  # 2 for bottom 3 for right
         has_data_labels: bool = False,
         data_labels_outside: bool = False,  # NEW: Position labels outside chart sections
+        font_size: int = 14,
         max_categories: int = 8,
+        small_title: bool = False,
         x: float = 1,
         y: float = 2,
         cx: float = 8,
@@ -297,22 +323,32 @@ class PptGenerator:
         # Set chart title
         chart.has_title = True
         chart.chart_title.text_frame.text = title if title else category_column
+        if small_title:
+            title_run = chart.chart_title.text_frame.paragraphs[0].runs[0]
+            title_run.font.size = Pt(12)
+            title_run.font.bold = False
+            title_run.font.name = 'Calibri'
+
         chart.has_legend = has_legend
         if has_legend:
             chart.legend.position = legend_position
-            chart.legend.include_in_layout = False
+            chart.legend.include_in_layout = True
+            chart.legend.font.size = Pt(font_size)
 
         chart.plots[0].has_data_labels = True
         data_labels = chart.plots[0].data_labels
         data_labels.show_value = True
+        data_labels.font.size = Pt(font_size)
 
         if has_data_labels:
             data_labels.show_category_name = True
-
         
         if to_percent:
             data_labels.show_percentage = True
             data_labels.show_value = False
+
+        chart.doughnut_hole_size = 90
+
 
     def add_table(
         self,
@@ -371,14 +407,6 @@ class PptGenerator:
                     paragraph.font.size = Pt(font_size)
 
     
-    def save(self, path: str):
-        try:
-            self.prs.save(path)
-            print(f"Presentation saved as {path}")
-            return True
-        except Exception as e:
-            print(f"Error saving presentation: {e}")
-            return False
 
     def add_stacked_bar(
         self,
@@ -387,6 +415,7 @@ class PptGenerator:
         value_columns: list[str],
         title: str,
         legend_position: int = 2,  
+        font_size: int = 12,
         x: float = 1,
         y: float = 2,
         cx: float = 8,
@@ -409,12 +438,24 @@ class PptGenerator:
         # Set chart title
         chart.has_title = True
         chart.chart_title.text_frame.text = title
+
         chart.has_legend = True
         chart.legend.position = legend_position
-        chart.legend.include_in_layout = False 
+        chart.legend.include_in_layout = False
+        chart.legend.font.size = Pt(font_size)
         
         chart.value_axis.tick_labels.number_format = '0%'
         chart.value_axis.maximum_scale = 1
+        chart.value_axis.tick_labels.font.size = Pt(font_size)
+
+        chart.category_axis.tick_labels.font.size = Pt(font_size)
+
+        chart.plots[0].has_data_labels = True
+        data_labels = chart.plots[0].data_labels
+        data_labels.show_value = True
+        data_labels.number_format = '0.0%'
+        data_labels.font.size = Pt(font_size)
+
 
     def add_img(
         self, 
@@ -436,6 +477,14 @@ class PptGenerator:
         else:
             print(f"Image {img_path} not found.")
 
+    def save(self, path: str):
+        try:
+            self.prs.save(path)
+            print(f"Presentation saved as {path}")
+            return True
+        except Exception as e:
+            print(f"Error saving presentation: {e}")
+            return False
 
 def main():
     pass

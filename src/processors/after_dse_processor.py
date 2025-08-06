@@ -92,7 +92,7 @@ class AfterDSEProcessor:
             title='第二位選擇',
             to_percentage=True,
             hide_y_axis=True,
-            x=1, y=1, cx=8, cy=3
+            x=1, y=1.3, cx=8, cy=3
         )
 
         self.ppt_generator.add_bar_chart(

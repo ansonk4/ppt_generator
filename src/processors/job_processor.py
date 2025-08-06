@@ -52,6 +52,7 @@ class JobProcessor:
             to_percent=True,
             title=f"選擇在{location}工作的DSE考生",
             has_legend=False,
+            small_title=True,
             has_data_labels=True,
             x=0.3, y=1.2, cx=3, cy=3
         )   
@@ -66,6 +67,7 @@ class JobProcessor:
             title=f"選擇在{location}工作的DSE考生對大灣區政策的了解程度",
             has_legend=False,
             has_data_labels=True,
+            small_title=True,
             x=0.3, y=4, cx=3.5, cy=3.5
         )
 
@@ -79,6 +81,7 @@ class JobProcessor:
             title=f"選擇在{location}工作的DSE考生的高中選修學科",
             has_legend=False,
             has_data_labels=True,
+            small_title=True,
             x=2.8, y=2.5, cx=3.5, cy=3.5
         )
 
@@ -95,6 +98,7 @@ class JobProcessor:
             title="選擇在香港工作的DSE考生希望修讀的科目",
             has_legend=False,
             to_percentage=True,
+            small_title=True,
             x=6, y=1.2, cx=4, cy=3
         )
         
@@ -110,6 +114,7 @@ class JobProcessor:
             value_columns=["distribution"],
             title=f"選擇在{location}工作的DSE考生希望從事的工作",
             has_legend=False,
+            small_title=True,
             to_percentage=True,
             x=6, y=4, cx=4, cy=3
         )
