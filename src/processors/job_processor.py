@@ -16,7 +16,7 @@ class JobProcessor:
 
     def _process_page1(self):
         self.ppt_generator.create_blank_slide("未來工作地點")
-        col = "未來工作地方"
+        col = "工作地方"
         location = self.data_reader.get_col_distribution(col, normalize=True, return_dict=False)
 
         self.ppt_generator.add_pie_chart(
@@ -224,7 +224,13 @@ class JobProcessor:
 
         self.ppt_generator.add_img("img/male.png", x=3, y=1.5)
         self.ppt_generator.add_img("img/female.png", x=5.5, y=1.5)
-    
+
+        for i, text in enumerate(["1st", "2nd", "3rd", "4th", "5th"]):
+            self.ppt_generator.add_textbox(
+                text,
+                x=4.7, y=3 + i * 0.75, cx=0.5, cy=0.5
+            )
+            
     def _process_page5(self):
 
         self.ppt_generator.create_blank_slide("從事與大學主修科目相關工作的可能性")
@@ -239,7 +245,6 @@ class JobProcessor:
             title="從事與大學主修科目相關工作的可能性",
             has_legend=False,
             has_data_labels=True,
-            data_labels_outside=True,
             x=1, y=2, cx=4, cy=4
         )
 
@@ -251,20 +256,19 @@ class JobProcessor:
             title="從事與大學主修科目相關工作的可能性",
             has_legend=False,
             has_data_labels=True,
-            data_labels_outside=True,
             x=0.5, y=2, cx=4, cy=4
         )
 
         major_data = self.data_reader.get_combined_distribution(
             columns=["希望修讀", "希望修讀_A", "希望修讀_B"],
             filtered_column="從事相關工作",
-            filter_value=1
+            filter_value="絕對會"
         ).head(10)
 
         job_data = self.data_reader.get_combined_distribution(
             columns=["希望從事", "希望從事_A", "希望從事_B"],
             filtered_column="從事相關工作",
-            filter_value=1
+            filter_value="絕對不會"
         ).head(10)
 
         major_data["百分比"] = major_data["distribution"].apply(lambda x: f"{round(x * 100, 1)}%")

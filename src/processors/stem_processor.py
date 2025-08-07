@@ -74,6 +74,7 @@ class StemProcessor:
             x=6, y=2, cx=4, cy=4
         )
 
+        
         stem_data["distribution"] = stem_data["distribution"].apply(lambda x: f"{x:.1%}")
         no_stem_data["distribution"] = no_stem_data["distribution"].apply(lambda x: f"{x:.1%}")
 
@@ -135,7 +136,7 @@ class StemProcessor:
 
     def process_stem_pages(self):
         self._process_page1()
-        self._process_major_or_job_page("受歡迎主修科目分佈", ["希望修讀", "希望修讀_A", "希望修讀_B"], [25, 61])
-        self._process_major_or_job_page("不受歡迎主修科目", ["不希望修讀", "不希望修讀_A", "不希望修讀_B"], [58])
-        self._process_major_or_job_page("受歡迎職業", ["希望從事", "希望從事_A", "希望從事_B"], [24, 48])
-        self._process_major_or_job_page("不受歡迎職業", ["不希望從事", "不希望從事_A", "不希望從事_B"], [24])
+        self._process_major_or_job_page("STEM參與率不同下受歡迎主修科目分佈", ["希望修讀", "希望修讀_A", "希望修讀_B"], ["電腦工程", "電腦科學"])
+        self._process_major_or_job_page("STEM參與率不同下不受歡迎主修科目分佈", ["不希望修讀", "不希望修讀_A", "不希望修讀_B"], ["數學"])
+        self._process_major_or_job_page("STEM參與率不同下受歡迎職業分佈", ["希望從事", "希望從事_A", "希望從事_B"], ["資訊科技", "電腦工程"])
+        self._process_major_or_job_page("STEM參與率不同下不受歡迎職業分佈", ["不希望從事", "不希望從事_A", "不希望從事_B"], ["電腦工程"])

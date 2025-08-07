@@ -23,9 +23,14 @@ class PptGenerator:
         slide = self.prs.slides.add_slide(slide_layout)
 
         if slide_title:
-            slide.shapes.title.text = slide_title
-            slide.shapes.title.text_frame.paragraphs[0].alignment = PP_ALIGN.LEFT
-            # slide.shapes.title.width = Inches(7)
+            title_shape = slide.shapes.title
+            title_shape.text = slide_title
+            title_shape.width = Inches(7)  # Set title width to 8 inches
+            title_shape.height = Inches(1.5)  # Set title height to maintain proper display
+            title_shape.left = Inches(0.5)  # Set title left position
+            title_shape.top = Inches(0.3)   # Set title top position
+            title_shape.text_frame.paragraphs[0].alignment = PP_ALIGN.LEFT
+
         self.current_slide = slide
 
     def add_image_header_footer_to_all_slides(self, image_path: str):
@@ -39,13 +44,15 @@ class PptGenerator:
         
         for slide in self.prs.slides:
             # Header
-            slide.shapes.add_picture(
+            picture = slide.shapes.add_picture(
                 image_path,
                 left_position,
                 top_position,
                 width=img_width,
                 height=img_height
             )
+            picture.element.getparent().remove(picture.element)
+            slide.shapes._spTree.insert(2, picture.element)
             
             # Footer
             footer = slide.shapes.add_textbox(
@@ -265,9 +272,8 @@ class PptGenerator:
         sort: bool = True,
         title: str = "Donut Chart",
         has_legend: bool = True,
-        legend_position: int = 2,  # 2 for bottom 3 for right
+        legend_position: int = 2,
         has_data_labels: bool = False,
-        data_labels_outside: bool = False,  # NEW: Position labels outside chart sections
         font_size: int = 14,
         max_categories: int = 8,
         small_title: bool = False,
@@ -276,15 +282,7 @@ class PptGenerator:
         cx: float = 8,
         cy: float = 5,
     ):
-        """
-        Add a donut chart to the current slide.
         
-        Parameters:
-        -----------
-        data_labels_outside : bool, default False
-            If True, positions data labels outside the chart sections.
-            If False, positions data labels inside the sections (default behavior).
-        """
         if category_column not in data.columns or value_column not in data.columns:
             print(f"Columns {category_column} or {value_column} not found in data")
             return
@@ -323,11 +321,12 @@ class PptGenerator:
             title_run.font.size = Pt(12)
             title_run.font.bold = False
             title_run.font.name = 'Calibri'
+            font_size = 10
 
         chart.has_legend = has_legend
         if has_legend:
             chart.legend.position = legend_position
-            chart.legend.include_in_layout = True
+            chart.legend.include_in_layout = legend_position == 2 
             chart.legend.font.size = Pt(font_size)
 
         chart.plots[0].has_data_labels = True
@@ -342,7 +341,6 @@ class PptGenerator:
             data_labels.show_percentage = True
             data_labels.show_value = False
 
-        chart.doughnut_hole_size = 90
 
     def add_stacked_bar(
             self,

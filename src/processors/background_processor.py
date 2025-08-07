@@ -53,7 +53,8 @@ class BackgroundProcessor:
             to_percent=True,
             legend_position=XL_LEGEND_POSITION.BOTTOM,
             title="父母教育程度",
-            x=1, y=2, cx=4, cy=4
+            font_size=12,
+            x=0.5, y=1.5, cx=5, cy=5
         )
 
         col = "高中選修學科"
@@ -63,25 +64,20 @@ class BackgroundProcessor:
             title="高中選修學科",
             to_percent=True,
             legend_position=XL_LEGEND_POSITION.BOTTOM,
-            x=5, y=2, cx=4, cy=4
+            font_size=12,
+            x=4.5, y=1.5, cx=5, cy=5
         )
 
         self.ppt_generator.create_blank_slide("考生中五成績")
-        chin = self.data_reader.get_col_distribution("中文成績", normalize=True, return_dict=True)
-        eng = self.data_reader.get_col_distribution("英文成績", normalize=True, return_dict=True)
-        math = self.data_reader.get_col_distribution("數學成績", normalize=True, return_dict=True)
+        cols = ["中文成績", "英文成績", "數學成績"]
+        data = [self.data_reader.get_col_distribution(col, normalize=True, return_dict=True) for col in cols]
 
-        # Merge the three DataFrames on their index (assumed to be the grade/category)
-        chin_series = pd.Series(chin, name="中文成績")
-        eng_series = pd.Series(eng, name="英文成績")
-        math_series = pd.Series(math, name="數學成績")
-        merged_scores = pd.concat([chin_series, eng_series, math_series], axis=1)
-        merged_scores = merged_scores.reset_index().rename(columns={"index": "score"})
-
+        data = pd.DataFrame(data, index=cols).reset_index()
+   
         self.ppt_generator.add_bar_chart(
-            merged_scores,
-            category_column="score",
-            value_columns=["中文成績", "英文成績", "數學成績"],
+            data,
+            category_column="index",
+            value_columns=data.columns[data.columns != "index"].tolist(),
             title="2025考生中五成績",
             to_percentage=True,
             font_size=12,
@@ -103,9 +99,10 @@ class BackgroundProcessor:
         chin = self.data_reader.get_combined_distribution(
             columns=["希望修讀", "希望修讀_A", "希望修讀_B"],
             filtered_column="中文成績",
-            filter_value=1,
+            filter_value="25-49 分",
         ).head(5)
         
+
         self.ppt_generator.add_bar_chart(
             chin,
             category_column="希望修讀",
@@ -120,7 +117,7 @@ class BackgroundProcessor:
         eng = self.data_reader.get_combined_distribution(
             columns=["希望修讀", "希望修讀_A", "希望修讀_B"],
             filtered_column="英文成績",
-            filter_value=1,
+            filter_value="25-49 分",
         ).head(5) 
 
         self.ppt_generator.add_bar_chart(
@@ -137,7 +134,7 @@ class BackgroundProcessor:
         math = self.data_reader.get_combined_distribution(
             columns=["希望修讀", "希望修讀_A", "希望修讀_B"],
             filtered_column="數學成績",
-            filter_value=1,
+            filter_value="25-49 分",
 
         ).head(5)
 

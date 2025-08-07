@@ -81,7 +81,7 @@ class GBAProcessor:
             filtered_column="大灣區了解",
             filter_value="完全不了解"
         )
-
+        
         # 58: Math
         stem_filtered = stem_data[stem_data[cols[0]].isin(target_major_or_job)]
         no_stem_filtered = no_stem_data[no_stem_data[cols[0]].isin(target_major_or_job)]
@@ -157,9 +157,9 @@ class GBAProcessor:
         self._process_page1()
         self._process_page2()
 
-        self._process_gba_major_or_job_page("對大灣區政策了解不同程度下受歡迎科目", ["希望修讀", "希望修讀_A", "希望修讀_B"], [25, 61])
-        self._process_gba_major_or_job_page("對大灣區政策了解程度不同下不受歡迎科目", ["不希望修讀", "不希望修讀_A", "不希望修讀_B"], [58])
-        self._process_gba_major_or_job_page("對大灣區政策了解程度不同下受歡職業", ["希望從事", "希望從事_A", "希望從事_B"], [24, 48])
+        self._process_gba_major_or_job_page("對大灣區政策了解不同程度下受歡迎科目", ["希望修讀", "希望修讀_A", "希望修讀_B"], ["金融"])
+        self._process_gba_major_or_job_page("對大灣區政策了解程度不同下不受歡迎科目", ["不希望修讀", "不希望修讀_A", "不希望修讀_B"], ["法律"])
+        self._process_gba_major_or_job_page("對大灣區政策了解程度不同下受歡職業", ["希望從事", "希望從事_A", "希望從事_B"], ["銀行/金融", "創業"])
         # self._process_major_or_job_page("不受歡迎職業", ["不希望從事", "不希望從事_A", "不希望從事_B"], [24])
 
         self._process_gba_page3()

@@ -11,6 +11,10 @@ class DataReader:
             df = pd.read_excel(self.file_path)
             # df = df.apply(lambda x: pd.to_numeric(x, errors='coerce'))
             df = df.replace(999, np.nan)
+            df = df.map(lambda x: x.strip() if isinstance(x, str) else x)
+            # Replace any cell that is empty or contains only spaces with np.nan
+            df = df.map(lambda x: np.nan if isinstance(x, str) and x.strip() == "" else x)
+
             self.data = df
             print(f"Data read successfully from {self.file_path}")
         except Exception as e:
@@ -53,6 +57,7 @@ class DataReader:
         self, 
         columns: list[str], 
         value: int = 1, 
+        unique: bool = False,
         filter_column: str | None = None,
         filter_value: str | int | None = None,
         return_dict: bool = True
@@ -64,6 +69,11 @@ class DataReader:
             data = self.data[self.data[filter_column] == filter_value]
 
         data = data.dropna(subset=columns)
+
+        # Drop rows where more than one target value exists in the specified columns
+        if unique:
+            target_mask = data[columns].apply(lambda row: (pd.to_numeric(row, errors='coerce') == value).sum(), axis=1)
+            data = data[target_mask <= 1]
 
         if len(data) == 0:
             print("No valid rows found in the DataFrame.")
@@ -78,6 +88,11 @@ class DataReader:
                 numeric_col = pd.to_numeric(data[col], errors='coerce').fillna(0)
                 count = int((numeric_col == value).sum())
                 result[col] = count / len(data)
+
+        if unique:
+            # Normalize so the sum of result is 100
+            total = sum(result.values())
+            result = {k: v / total for k, v in result.items()}
 
         if return_dict:
             return result       

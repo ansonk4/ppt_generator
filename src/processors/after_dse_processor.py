@@ -15,6 +15,7 @@ class AfterDSEProcessor:
 
         plan_dis = self.data_reader.get_binary_distribution(
             ["大學", "副學士", "文憑", "高級文憑", "工作", "工作假期", "其他"],
+            unique=True,
             return_dict=False
         )
 
@@ -45,7 +46,6 @@ class AfterDSEProcessor:
             return_dict=False,
         )
         
-
         self.ppt_generator.add_pie_chart(
             plan_dis, col, 'distribution',
             title='第二階段計劃',
@@ -183,7 +183,7 @@ class AfterDSEProcessor:
                 filter_value=1
             ) for col in cols
         ]
-        
+
         df_A = pd.DataFrame(data_A)
         df_A['category'] = cols
         df_A = df_A.rename(columns={'有': 'distribution'})
@@ -195,7 +195,7 @@ class AfterDSEProcessor:
         value_cols = [col for col in df_B.columns]
         df_B[value_cols] = df_B[value_cols].div(df_B[value_cols].sum(axis=1), axis=0)
         df_B['category'] = cols
-
+        
         self.ppt_generator.add_bar_chart(
             df_A,
             category_column='category',

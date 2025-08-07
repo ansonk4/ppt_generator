@@ -86,6 +86,12 @@ class MajorProcessor:
         self.ppt_generator.add_img("img/male.png", x=3, y=1.5)
         self.ppt_generator.add_img("img/female.png", x=5.5, y=1.5)
 
+        for i, text in enumerate(["1st", "2nd", "3rd", "4th", "5th"]):
+            self.ppt_generator.add_textbox(
+                text,
+                x=4.7, y=3 + i * 0.75, cx=0.5, cy=0.5
+            )
+
 
     def _process_page3(self):
         self.ppt_generator.create_blank_slide("不受歡迎主修科目")
@@ -161,6 +167,13 @@ class MajorProcessor:
             color=(255, 153, 204),
             x=5.5, cx=4, y=3, cy=4
         )
+
+        for i, text in enumerate(["1st", "2nd", "3rd", "4th", "5th"]):
+            self.ppt_generator.add_textbox(
+                text,
+                x=4.7, y=3 + i * 0.75, cx=0.5, cy=0.5
+            )
+
 
         self.ppt_generator.add_img("img/male.png", x=3, y=1.5)
         self.ppt_generator.add_img("img/female.png", x=5.5, y=1.5)
