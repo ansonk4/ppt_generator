@@ -16,6 +16,24 @@ class PptGenerator:
         self.prs = Presentation()
         self.current_slide = None
     
+    def create_title_slide(self, title: str, subtitle: str = ""):
+        """Create a title slide with the given title and subtitle"""
+        slide_layout = self.prs.slide_layouts[0]
+        slide = self.prs.slides.add_slide(slide_layout)
+        title_shape = slide.shapes.title
+        title_shape.text = title
+        if subtitle:
+            subtitle_shape = slide.placeholders[1]
+            subtitle_shape.text = subtitle
+        self.current_slide = slide
+    
+    def create_section_slide(self, title: str):
+        """Create a section slide with the given title"""
+        slide_layout = self.prs.slide_layouts[2]
+        slide = self.prs.slides.add_slide(slide_layout)
+        title_shape = slide.shapes.title
+        title_shape.text = title
+        self.current_slide = slide
 
     def create_blank_slide(self, slide_title: str | None = None):
         """Create a blank slide"""
@@ -270,7 +288,7 @@ class PptGenerator:
         value_column: str,
         to_percent: bool = False,
         sort: bool = True,
-        title: str = "Donut Chart",
+        title: str | None = None,
         has_legend: bool = True,
         legend_position: int = 2,
         has_data_labels: bool = False,
@@ -409,8 +427,6 @@ class PptGenerator:
         if rows is None or cols is None:
             rows = len(data) + 1  # +1 for header row
             cols = len(data.columns) + 1 if index else len(data.columns) 
-
-
 
         table = self.current_slide.shapes.add_table(rows, cols, Inches(x), Inches(y), Inches(cx), Inches(cy)).table
 

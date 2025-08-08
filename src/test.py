@@ -1,14 +1,5 @@
+import data_reader
 
-
-cols = [
-    "大學入學講座",
-    "升學展覽",
-    "職業博覽",
-    "生涯規劃",
-    "團體師友",
-    "工作影子",
-]
-
-for col in cols:
-    print(col + "_A")
-    print(col + "_B")
+reader = data_reader.DataReader("data/data2.xlsx")
+df = reader.get_combined_distribution(["希望修讀", "希望修讀_A", "希望修讀_B"]).head(5)
+print(df)

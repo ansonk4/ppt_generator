@@ -24,7 +24,7 @@ class DataReader:
     def get_col_distribution(
         self, 
         column_name: str,
-        filter_column: str | None = None,
+        filter_column: str | list[str] | None = None,
         filter_value: str | int | None = None,
         normalize: bool = True,
         exclude: float | int | None = None,
@@ -32,8 +32,14 @@ class DataReader:
     ) -> pd.DataFrame | dict:
         """Get the distribution of a specified column"""
         data = self.data
+
         if filter_column is not None and filter_value is not None:
-            data = data[data[filter_column] == filter_value]
+            if filter_column is not None and isinstance(filter_column, str):
+                data = data[data[filter_column] == filter_value]
+            elif isinstance(filter_column, list):
+                # Apply OR condition: any of the filter_columns can have the filter_value
+                mask = data[filter_column].eq(filter_value).any(axis=1)
+                data = data[mask]
 
         if exclude is not None:
             data = data[data[column_name] != exclude]

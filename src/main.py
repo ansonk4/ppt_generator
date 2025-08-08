@@ -31,6 +31,8 @@ class PresentationGenerator:
         
     def generate_presentation(self):
 
+        self.ppt_generator.create_title_slide("2025年\nDSE考生問卷調查\n未來勞動力供應預測")
+        
         self.background_processor.process_background_pages()
         self.after_dse_processor.process_after_dse_pages()
         self.major_processor.process_major_pages()

@@ -158,9 +158,29 @@ class AfterDSEProcessor:
 
     def _process_page7(self):
         self.ppt_generator.create_blank_slide("受歡迎主修科目 (按考生希望升讀的大學)")
+        cols = [
+            "香港大學", "中文大學", "科技大學", "理工大學", "城市大學", "浸會大學", "教育大學", 
+            "嶺南大學", "樹仁大學", "都會大學", "恒生大學", "聖方濟各大學", "自資學院"
+        ]
+
+        data = [self.data_reader.get_combined_distribution(
+            ["希望修讀", "希望修讀_A", "希望修讀_B"],
+            filtered_column=col,
+            filter_value=1
+        )[:2] for col in cols]
+
+        combined_df = pd.DataFrame()
+        for i, df in enumerate(data):
+            combined_df[cols[i]] = df['希望修讀'] + ' ' + (df['distribution'] * 100).round(1).astype(str) + '%'
+
+        combined_df.index = ['1st', '2nd']
+        self.ppt_generator.add_table(
+            combined_df,
+            x=0.5, y=2, cx=9, cy=3,
+            font_size=12,
+        )
 
 
-    
     def _process_page8(self):
         self.ppt_generator.create_blank_slide("考生接收升學及就業資訊活動和成效")
 
@@ -237,6 +257,7 @@ class AfterDSEProcessor:
         )
 
     def process_after_dse_pages(self):
+        self.ppt_generator.create_section_slide("考生升學意向、選科取向")
         self._process_page1()
         self._process_page2()
         self._process_page34()

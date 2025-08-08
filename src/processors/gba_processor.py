@@ -11,7 +11,6 @@ class GBAProcessor:
         self.ppt_generator = ppt_generator
 
     def _process_page1(self):
-        self.ppt_generator.create_blank_slide("大灣區政策\n對選科及就業取向影響")
 
         self.ppt_generator.create_blank_slide("DSE考生對大灣區政策了解")
         self.ppt_generator.add_textbox(
@@ -154,6 +153,7 @@ class GBAProcessor:
         )
 
     def process_gba_pages(self):
+        self.ppt_generator.create_section_slide("大灣區政策對選科及就業取向影響")
         self._process_page1()
         self._process_page2()
 

@@ -10,10 +10,6 @@ class JobProcessor:
         self.ppt_generator = ppt_generator
 
 
-    def _process_title_page(self):
-        self.ppt_generator.create_blank_slide("考生未來工作取向")
-
-
     def _process_page1(self):
         self.ppt_generator.create_blank_slide("未來工作地點")
         col = "工作地方"
@@ -230,7 +226,95 @@ class JobProcessor:
                 text,
                 x=4.7, y=3 + i * 0.75, cx=0.5, cy=0.5
             )
-            
+    
+    def _process_least_popular_job(self):
+        least_popular_job = self.data_reader.get_combined_distribution(
+            ["不希望從事", "不希望從事_A", "不希望從事_B"],
+        ).head(1)["不希望從事"].values[0]
+
+        self.ppt_generator.create_blank_slide(f"最不受歡迎職業：{least_popular_job} (背景資料)")
+
+        gender = self.data_reader.get_col_distribution(
+            "性別",  
+            ["不希望從事", "不希望從事_A", "不希望從事_B"],
+            least_popular_job,
+            normalize=True, 
+        
+        )
+        self.ppt_generator.add_donut_chart(
+            gender,
+            "性別", "distribution",
+            has_legend=False,
+            to_percent=True,
+            has_data_labels=True,
+            x=0.0, y=1.7, cx=3, cy=3,
+        )
+
+        banding = self.data_reader.get_col_distribution(
+            "Banding", 
+            ["不希望從事", "不希望從事_A", "不希望從事_B"],
+            least_popular_job,
+            normalize=True,
+        )
+        self.ppt_generator.add_donut_chart(
+            banding,
+            "Banding", "distribution",
+            has_legend=False,
+            to_percent=True,
+            has_data_labels=True,
+            x=2.3, y=1.7, cx=3, cy=3,
+        )
+
+        elective = self.data_reader.get_col_distribution(
+            "高中選修學科", 
+            ["不希望從事", "不希望從事_A", "不希望從事_B"],
+            least_popular_job,
+            normalize=True,
+        )
+        self.ppt_generator.add_bar_chart(
+            elective,
+            "高中選修學科",
+            ["distribution"],
+            title="高中選修學科",
+            to_percentage=True,
+            has_legend=False,
+            x=0.5, y=4.5, cx=4.5, cy=2.8,
+        )
+
+        edu_bg = self.data_reader.get_col_distribution(
+            "父母教育程度", 
+            ["不希望從事", "不希望從事_A", "不希望從事_B"],
+            least_popular_job,
+            normalize=True,
+        )
+        self.ppt_generator.add_bar_chart(
+            edu_bg,
+            "父母教育程度",
+            ["distribution"],
+            title="父母教育程度",
+            to_percentage=True,
+            has_legend=False,
+            x=5, y=4, cx=5, cy=3.5,
+        )
+
+        cols = ["中文成績", "英文成績", "數學成績"]
+        grade_data = [
+            self.data_reader.get_col_distribution(
+                col, normalize=True, return_dict=True,
+                filter_column=["不希望從事", "不希望從事_A", "不希望從事_B"],
+                filter_value=least_popular_job,
+            ) for col in cols
+        ]
+        grade_data = pd.DataFrame(grade_data, index=cols).reset_index()
+        self.ppt_generator.add_bar_chart(
+            grade_data,
+            category_column="index",
+            value_columns=grade_data.columns[grade_data.columns != "index"].tolist(),
+            to_percentage=True,
+            font_size=12,
+            has_legend=True,
+            x=5, y=1.2, cx=4.5, cy=2.8
+        )
     def _process_page5(self):
 
         self.ppt_generator.create_blank_slide("從事與大學主修科目相關工作的可能性")
@@ -289,8 +373,9 @@ class JobProcessor:
             x=7, y=2.5, cx=2, cy=3.5,
             font_size=14
         )
-
+    
     def process_job_pages(self):
+        self.ppt_generator.create_section_slide("考生未來工作取向")
         self._process_page1()
 
         self._process_page_filtered_by_location("香港")
@@ -306,8 +391,8 @@ class JobProcessor:
         
         self._process_major_preference_page("不受歡迎職業", ["不希望從事", "不希望從事_A", "不希望從事_B"])
         self.ppt_generator.create_blank_slide("不受歡迎職業走勢")
-        self.ppt_generator.create_blank_slide("最不受歡迎職業: XX (背景資料)")
-        self.ppt_generator.create_blank_slide("不受歡迎職業主要原因")
+
+        self._process_least_popular_job()
 
         self._process_gender_major_preference_page("不受男女歡迎職業排名", ["不希望從事", "不希望從事_A", "不希望從事_B"])
 

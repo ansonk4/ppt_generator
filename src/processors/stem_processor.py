@@ -11,7 +11,6 @@ class StemProcessor:
 
     
     def _process_page1(self):
-        self.ppt_generator.create_blank_slide("STEM學習項目對選科及就業取向影響")
         self.ppt_generator.create_blank_slide("DSE考生STEM學習項目參與分佈")
 
         stem_dis = self.data_reader.get_col_distribution("參加STEM", normalize=True, return_dict=False)
@@ -135,6 +134,7 @@ class StemProcessor:
         )
 
     def process_stem_pages(self):
+        self.ppt_generator.create_section_slide("STEM學習項目對選科及就業取向影響")
         self._process_page1()
         self._process_major_or_job_page("STEM參與率不同下受歡迎主修科目分佈", ["希望修讀", "希望修讀_A", "希望修讀_B"], ["電腦工程", "電腦科學"])
         self._process_major_or_job_page("STEM參與率不同下不受歡迎主修科目分佈", ["不希望修讀", "不希望修讀_A", "不希望修讀_B"], ["數學"])

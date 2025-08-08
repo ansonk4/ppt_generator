@@ -92,7 +92,6 @@ class MajorProcessor:
                 x=4.7, y=3 + i * 0.75, cx=0.5, cy=0.5
             )
 
-
     def _process_page3(self):
         self.ppt_generator.create_blank_slide("不受歡迎主修科目")
         
@@ -124,7 +123,95 @@ class MajorProcessor:
             x=0.5, cx=3, font_size=19
         )
 
+    def _process_least_popular_major(self):
 
+        least_popular_major = self.data_reader.get_combined_distribution(
+            ["不希望修讀", "不希望修讀_A", "不希望修讀_B"],
+        ).head(1)["不希望修讀"].values[0]
+
+        self.ppt_generator.create_blank_slide(f"最不受歡迎主修科目：{least_popular_major} (背景資料)")
+
+        gender = self.data_reader.get_col_distribution(
+            "性別",  
+            ["不希望修讀", "不希望修讀_A", "不希望修讀_B"],
+            least_popular_major,
+            normalize=True, 
+        
+        )
+        self.ppt_generator.add_donut_chart(
+            gender,
+            "性別", "distribution",
+            has_legend=False,
+            to_percent=True,
+            has_data_labels=True,
+            x=0.0, y=1.7, cx=3, cy=3,
+        )
+
+        banding = self.data_reader.get_col_distribution(
+            "Banding", 
+            ["不希望修讀", "不希望修讀_A", "不希望修讀_B"],
+            least_popular_major,
+            normalize=True,
+        )
+        self.ppt_generator.add_donut_chart(
+            banding,
+            "Banding", "distribution",
+            has_legend=False,
+            to_percent=True,
+            has_data_labels=True,
+            x=2.3, y=1.7, cx=3, cy=3,
+        )
+
+        elective = self.data_reader.get_col_distribution(
+            "高中選修學科", 
+            ["不希望修讀", "不希望修讀_A", "不希望修讀_B"],
+            least_popular_major,
+            normalize=True,
+        )
+        self.ppt_generator.add_bar_chart(
+            elective,
+            "高中選修學科",
+            ["distribution"],
+            title="高中選修學科",
+            to_percentage=True,
+            has_legend=False,
+            x=0.5, y=4.5, cx=4.5, cy=2.8,
+        )
+
+        edu_bg = self.data_reader.get_col_distribution(
+            "父母教育程度", 
+            ["不希望修讀", "不希望修讀_A", "不希望修讀_B"],
+            least_popular_major,
+            normalize=True,
+        )
+        self.ppt_generator.add_bar_chart(
+            edu_bg,
+            "父母教育程度",
+            ["distribution"],
+            title="父母教育程度",
+            to_percentage=True,
+            has_legend=False,
+            x=5, y=4, cx=5, cy=3.5,
+        )
+
+        cols = ["中文成績", "英文成績", "數學成績"]
+        grade_data = [
+            self.data_reader.get_col_distribution(
+                col, normalize=True, return_dict=True,
+                filter_column=["不希望修讀", "不希望修讀_A", "不希望修讀_B"],
+                filter_value=least_popular_major
+            ) for col in cols
+        ]
+        grade_data = pd.DataFrame(grade_data, index=cols).reset_index()
+        self.ppt_generator.add_bar_chart(
+            grade_data,
+            category_column="index",
+            value_columns=grade_data.columns[grade_data.columns != "index"].tolist(),
+            to_percentage=True,
+            font_size=12,
+            has_legend=True,
+            x=5, y=1.2, cx=4.5, cy=2.8
+        )
 
     def _process_page4(self):
         self.ppt_generator.create_blank_slide("最不受男女歡迎主修科目")
@@ -175,6 +262,8 @@ class MajorProcessor:
             )
 
 
+    
+
         self.ppt_generator.add_img("img/male.png", x=3, y=1.5)
         self.ppt_generator.add_img("img/female.png", x=5.5, y=1.5)
 
@@ -184,4 +273,5 @@ class MajorProcessor:
         self._process_page1()
         self._process_page2()
         self._process_page3()
+        self._process_least_popular_major()
         self._process_page4()
