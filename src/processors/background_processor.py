@@ -101,7 +101,7 @@ class BackgroundProcessor:
             filtered_column="中文成績",
             filter_value="25-49 分",
         ).head(5)
-        
+    
 
         self.ppt_generator.add_bar_chart(
             chin,

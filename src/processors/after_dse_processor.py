@@ -184,14 +184,7 @@ class AfterDSEProcessor:
     def _process_page8(self):
         self.ppt_generator.create_blank_slide("考生接收升學及就業資訊活動和成效")
 
-        cols = [
-            "大學入學講座",
-            "升學展覽",
-            "職業博覽",
-            "生涯規劃",
-            "團體師友",
-            "工作影子",
-        ]
+        cols = ["大學入學講座","升學展覽","職業博覽","生涯規劃","團體師友","工作影子"]
 
         data_A = [self.data_reader.get_col_distribution(col + "_A", normalize=True, return_dict=True) for col in cols]
         data_B = [
@@ -200,7 +193,7 @@ class AfterDSEProcessor:
                 normalize=True,
                 return_dict=True, 
                 filter_column=col + "_A", 
-                filter_value=1
+                filter_value="有"
             ) for col in cols
         ]
 
@@ -242,8 +235,11 @@ class AfterDSEProcessor:
         cols = ["學科知識", "院校因素", "大學學費", "助學金", "主要行業", "朋輩老師", 
             "家庭因素", "預期收入", "DSE成績", "高中選修科目"]
 
-        data = [self.data_reader.get_col_distribution(col, normalize=True, return_dict=True) for col in cols]
-        
+        data = [
+            self.data_reader.get_col_distribution(col, normalize=True, return_dict=True) 
+            for col in cols
+        ]
+
         df = pd.DataFrame(data)
         df['category'] = cols
 

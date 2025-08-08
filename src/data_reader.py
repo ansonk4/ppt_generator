@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import yaml
+from data_validator import DataValidator
 
 class DataReader:
     """Class to read data from an Excel file"""
@@ -9,7 +10,7 @@ class DataReader:
 
         try:
             df = pd.read_excel(self.file_path)
-            # df = df.apply(lambda x: pd.to_numeric(x, errors='coerce'))
+
             df = df.replace(999, np.nan)
             df = df.map(lambda x: x.strip() if isinstance(x, str) else x)
             # Replace any cell that is empty or contains only spaces with np.nan
@@ -20,7 +21,16 @@ class DataReader:
         except Exception as e:
             raise ValueError("Failed to read data from Excel file.")
 
-    
+        validator = DataValidator(self.data)
+
+        missing_col = validator.validate_column()
+        if missing_col:
+            raise ValueError(f"Missing required columns: {', '.join(missing_col)}")
+        else:
+            print("All required columns are present in the data.")
+
+        validator.validate_cols()
+
     def get_col_distribution(
         self, 
         column_name: str,

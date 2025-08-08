@@ -96,10 +96,10 @@ class StemProcessor:
     def _process_page2(self):
         self.ppt_generator.create_blank_slide("STEM學習項目影響程度")
         data = self.data_reader.get_col_distribution(
-            "STEM影響程度", normalize=True, return_dict=False, exclude=0,
+            "STEM影響職業選擇程度", normalize=True, return_dict=False, exclude=0,
         )
         self.ppt_generator.add_donut_chart(
-            data, "STEM影響程度", "distribution",
+            data, "STEM影響職業選擇程度", "distribution",
             to_percent=True,
             title="職業選擇影響程度",
             has_legend=False,
@@ -136,6 +136,7 @@ class StemProcessor:
     def process_stem_pages(self):
         self.ppt_generator.create_section_slide("STEM學習項目對選科及就業取向影響")
         self._process_page1()
+        self._process_page2()
         self._process_major_or_job_page("STEM參與率不同下受歡迎主修科目分佈", ["希望修讀", "希望修讀_A", "希望修讀_B"], ["電腦工程", "電腦科學"])
         self._process_major_or_job_page("STEM參與率不同下不受歡迎主修科目分佈", ["不希望修讀", "不希望修讀_A", "不希望修讀_B"], ["數學"])
         self._process_major_or_job_page("STEM參與率不同下受歡迎職業分佈", ["希望從事", "希望從事_A", "希望從事_B"], ["資訊科技", "電腦工程"])
