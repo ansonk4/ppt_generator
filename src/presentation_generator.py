@@ -28,7 +28,10 @@ class PresentationGenerator:
         self.job_processor = JobProcessor(self.data_reader, self.ppt_generator)
         self.stem_processor = StemProcessor(self.data_reader, self.ppt_generator)
         self.gba_processor = GBAProcessor(self.data_reader, self.ppt_generator)
-        
+
+    def validate_data(self):
+        return self.data_reader.validate_data()
+
     def generate_presentation(self):
 
         self.ppt_generator.create_title_slide("2025年\nDSE考生問卷調查\n未來勞動力供應預測")
@@ -47,4 +50,5 @@ class PresentationGenerator:
 if __name__ == "__main__":
     config = Config()
     presentation_generator = PresentationGenerator(config)
+    print(presentation_generator.validate_data())
     presentation_generator.generate_presentation()

@@ -51,7 +51,7 @@ class DataValidator:
         else:
             return []
     
-    def validate_cols(self):
+    def validate_cols(self) -> list[dict]:
         """Validate specific columns for acceptable values"""
 
         validation_result = []
@@ -89,4 +89,8 @@ class DataValidator:
             if not invalid_values.empty:
                 invalid_row_ids = self.data.index[invalid_mask].tolist()
                 result[col] = [(row_id, value) for row_id, value in zip(invalid_row_ids, invalid_values)]
+                
+        if result:
+            result["acceptable_values"] = acceptable_values
+
         return result

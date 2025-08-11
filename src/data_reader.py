@@ -21,15 +21,21 @@ class DataReader:
         except Exception as e:
             raise ValueError("Failed to read data from Excel file.")
 
+
+    def validate_data(self):
+        """Validate the data in the DataFrame"""
         validator = DataValidator(self.data)
 
         missing_col = validator.validate_column()
-        if missing_col:
-            raise ValueError(f"Missing required columns: {', '.join(missing_col)}")
-        else:
-            print("All required columns are present in the data.")
+        if missing_col: 
+            return missing_col
 
-        validator.validate_cols()
+        validation_result = validator.validate_cols()
+        if all(not d for d in validation_result):
+            return []
+        else:
+            return [d for d in validation_result if d]
+
 
     def get_col_distribution(
         self, 
