@@ -1,13 +1,12 @@
 import pandas as pd
 import numpy as np
 import yaml
-from data_validator import DataValidator
 
 class DataReader:
     """Class to read data from an Excel file"""
     def __init__(self, file_path: str):
         self.file_path = file_path
-
+        
         try:
             df = pd.read_excel(self.file_path)
 
@@ -18,24 +17,20 @@ class DataReader:
 
             self.data = df
             print(f"Data read successfully from {self.file_path}")
+
         except Exception as e:
             raise ValueError("Failed to read data from Excel file.")
 
+    def replace_invalid_values(self, validate_results: list[dict]) -> None:
+        """Replace invalid values in the data with NaN"""
+        for result_dict in validate_results:
+            for column, invalid_entries in result_dict.items():
+                if column == "acceptable_values":
+                    continue
 
-    def validate_data(self):
-        """Validate the data in the DataFrame"""
-        validator = DataValidator(self.data)
-
-        missing_col = validator.validate_column()
-        if missing_col: 
-            return missing_col
-
-        validation_result = validator.validate_cols()
-        if all(not d for d in validation_result):
-            return []
-        else:
-            return [d for d in validation_result if d]
-
+                if column in self.data.columns and invalid_entries:
+                    row_ids = [row_id for row_id, _ in invalid_entries]
+                    self.data.loc[row_ids, column] = np.nan
 
     def get_col_distribution(
         self, 

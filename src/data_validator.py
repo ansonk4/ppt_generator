@@ -6,6 +6,7 @@ class DataValidator:
     """Class to validate data in a DataFrame"""
     def __init__(self, data: pd.DataFrame):
         self.data = data
+    
 
     def validate_column(self) -> list[str]:
         """Validate if the column exists and has the expected type"""
@@ -51,7 +52,7 @@ class DataValidator:
         else:
             return []
     
-    def validate_cols(self) -> list[dict]:
+    def validate_value(self) -> list[dict]:
         """Validate specific columns for acceptable values"""
 
         validation_result = []
