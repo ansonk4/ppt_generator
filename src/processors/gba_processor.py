@@ -83,26 +83,42 @@ class GBAProcessor:
             filter_value="完全不了解"
         )
         
-        # 58: Math
-        stem_filtered = stem_data[stem_data[cols[0]].isin(target_major_or_job)]
-        no_stem_filtered = no_stem_data[no_stem_data[cols[0]].isin(target_major_or_job)]
+        try:
+            stem_filtered = stem_data[stem_data[cols[0]].isin(target_major_or_job)]
+            no_stem_filtered = no_stem_data[no_stem_data[cols[0]].isin(target_major_or_job)]
 
-        # Merge the two DataFrames for bar chart
-        merged_df = pd.merge(
-            stem_filtered,
-            no_stem_filtered,
-            on=cols[0],
-            suffixes=("_gba", "_no_gba")
-        )
+            missing = set(target_major_or_job) - set(stem_filtered[cols[0]])
+            if len(stem_filtered) < len(target_major_or_job):
+                for item in missing:
+                    new_row = pd.DataFrame([{cols[0]: item, "distribution": 0.0}])
+                    stem_filtered = pd.concat([stem_filtered, new_row], ignore_index=True)
 
-        self.ppt_generator.add_bar_chart(
-            merged_df.rename(columns={"distribution_gba": "對大灣區了解", "distribution_no_gba": "對大灣區不了解"}),
-            category_column=cols[0],
-            value_columns=["對大灣區了解", "對大灣區不了解"],
-            to_percentage=True,
-            legend_position=XL_LEGEND_POSITION.BOTTOM,
-            x=6, y=2, cx=4, cy=4
-        )
+            missing_no_stem = set(target_major_or_job) - set(no_stem_filtered[cols[0]])
+            if len(no_stem_filtered) < len(target_major_or_job):
+                for item in missing_no_stem:
+                    new_row = pd.DataFrame([{cols[0]: item, "distribution": 0.0}])
+                    no_stem_filtered = pd.concat([no_stem_filtered, new_row], ignore_index=True)
+
+                st.warning(f"Warning: missing {missing_no_stem | missing} in job/major data when processing stem data.")
+
+            # Merge the two DataFrames for bar chart1
+            merged_df = pd.merge(
+                stem_filtered,
+                no_stem_filtered,
+                on=cols[0],
+                suffixes=("_gba", "_no_gba")
+            )
+   
+            self.ppt_generator.add_bar_chart(
+                merged_df.rename(columns={"distribution_gba": "對大灣區了解", "distribution_no_gba": "對大灣區不了解"}),
+                category_column=cols[0],
+                value_columns=["對大灣區了解", "對大灣區不了解"],
+                to_percentage=True,
+                legend_position=XL_LEGEND_POSITION.BOTTOM,
+                x=6, y=2, cx=4, cy=4
+            )
+        except Exception as e:
+            st.error(f"Error processing gba data: {e}")
 
         stem_data["distribution"] = stem_data["distribution"].apply(lambda x: f"{x:.1%}")
         no_stem_data["distribution"] = no_stem_data["distribution"].apply(lambda x: f"{x:.1%}")
@@ -122,7 +138,6 @@ class GBAProcessor:
             font_size=12,
             x=3, y=2, cx=2.7, cy=4.5,
         )
-
 
     def _process_gba_page3(self):
         self.ppt_generator.create_blank_slide("考生對大灣區擇業的影響因素")

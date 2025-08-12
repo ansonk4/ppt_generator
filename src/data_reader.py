@@ -123,7 +123,7 @@ class DataReader:
         filtered_column: str | None = None,
         filter_value: str | int | None = None,
         return_dict: bool = False,
-    ) -> pd.DataFrame:
+    ) -> pd.DataFrame| dict[str, ]:
         """
         Get the normalized combined distribution of multiple specified columns.
         Optionally filter the data by a column and value.

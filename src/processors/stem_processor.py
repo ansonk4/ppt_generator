@@ -52,11 +52,27 @@ class StemProcessor:
             filtered_column="參加STEM",
             filter_value="沒有"
         )
+        try:
+            stem_filtered = stem_data[stem_data[cols[0]].isin(target_major_or_job)]
+            no_stem_filtered = no_stem_data[no_stem_data[cols[0]].isin(target_major_or_job)]
 
-        # 58: Math
-        stem_filtered = stem_data[stem_data[cols[0]].isin(target_major_or_job)]
-        no_stem_filtered = no_stem_data[no_stem_data[cols[0]].isin(target_major_or_job)]
+            missing = set(target_major_or_job) - set(stem_filtered[cols[0]])
+            if len(stem_filtered) < len(target_major_or_job):
+                for item in missing:
+                    new_row = pd.DataFrame([{cols[0]: item, "distribution": 0.0}])
+                    stem_filtered = pd.concat([stem_filtered, new_row], ignore_index=True)
 
+            missing_no_stem = set(target_major_or_job) - set(no_stem_filtered[cols[0]])
+            if len(no_stem_filtered) < len(target_major_or_job):
+                for item in missing_no_stem:
+                    new_row = pd.DataFrame([{cols[0]: item, "distribution": 0.0}])
+                    no_stem_filtered = pd.concat([no_stem_filtered, new_row], ignore_index=True)
+                st.warning(f"Warning: missing {missing_no_stem | missing} in job/major data when processing stem data.")
+                
+        except Exception as e:
+            st.error(f"Error processing stem data: {e}")
+
+        
         # Merge the two DataFrames for bar chart
         merged_df = pd.merge(
             stem_filtered,
@@ -73,6 +89,7 @@ class StemProcessor:
             legend_position=XL_LEGEND_POSITION.BOTTOM,
             x=6, y=2, cx=4, cy=4
         )
+
 
         
         stem_data["distribution"] = stem_data["distribution"].apply(lambda x: f"{x:.1%}")

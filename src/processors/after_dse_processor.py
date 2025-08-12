@@ -172,7 +172,7 @@ class AfterDSEProcessor:
 
         combined_df = pd.DataFrame()
         for i, df in enumerate(data):
-            combined_df[cols[i]] = df['希望修讀'] + ' ' + (df['distribution'] * 100).round(1).astype(str) + '%'
+            combined_df[cols[i]] = df['希望修讀'].astype(str) + ' ' + (df['distribution'] * 100).round(1).astype(str) + '%'
 
         combined_df.index = ['1st', '2nd']
         self.ppt_generator.add_table(
