@@ -4,20 +4,24 @@ This project generates PowerPoint presentations from survey data collected from 
 
 ## Usage
 
+You can use the PPT Report Generator directly online at [https://pptgenerator-uqzlepmjiojt6h6mowtmk7.streamlit.app/](https://pptgenerator-uqzlepmjiojt6h6mowtmk7.streamlit.app/) and skip the following steps.
+
+If you prefer to run it locally, follow these steps:
+
 1. Make sure you're using Python 3.10 or higher.
 
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/ansonk4/ppt_generator.git
-   cd ppt
-   ```
+2. Clone this repository:
+    ```bash
+    git clone https://github.com/ansonk4/ppt_generator.git
+    cd ppt
+    ```
 
-1. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+3. Install dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-1. To run the Streamlit web interface:
+4. Run the Streamlit web interface:
     ```bash
     streamlit run src/streamlit.py
     ```
