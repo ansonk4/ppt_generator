@@ -82,7 +82,7 @@ class DataValidator:
     def _validate_col(self, column: str | list[str], acceptable_values: list[str]) -> dict[list[tuple[int, str]]]:
         """Validate if the column exists and contains acceptable values"""
         column = [column] if isinstance(column, str) else column
-        acceptable_values = acceptable_values + [np.nan]
+        acceptable_values = acceptable_values + [999] + [np.nan]
         result = {}
         for col in column:
             invalid_mask = ~self.data[col].isin(acceptable_values)
@@ -95,3 +95,5 @@ class DataValidator:
             result["acceptable_values"] = acceptable_values
 
         return result
+    
+    # def check_data_exist(self, columsn: str | list[str]) -> d

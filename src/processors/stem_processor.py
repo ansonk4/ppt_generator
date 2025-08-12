@@ -1,4 +1,5 @@
 import pandas as pd 
+import streamlit as st
 from data_reader import DataReader
 from ppt_generator import PptGenerator
 from pptx.enum.chart import XL_LEGEND_POSITION
@@ -134,10 +135,37 @@ class StemProcessor:
         )
 
     def process_stem_pages(self):
-        self.ppt_generator.create_section_slide("STEM學習項目對選科及就業取向影響")
-        self._process_page1()
-        self._process_page2()
-        self._process_major_or_job_page("STEM參與率不同下受歡迎主修科目分佈", ["希望修讀", "希望修讀_A", "希望修讀_B"], ["電腦工程", "電腦科學"])
-        self._process_major_or_job_page("STEM參與率不同下不受歡迎主修科目分佈", ["不希望修讀", "不希望修讀_A", "不希望修讀_B"], ["數學"])
-        self._process_major_or_job_page("STEM參與率不同下受歡迎職業分佈", ["希望從事", "希望從事_A", "希望從事_B"], ["資訊科技", "電腦工程"])
-        self._process_major_or_job_page("STEM參與率不同下不受歡迎職業分佈", ["不希望從事", "不希望從事_A", "不希望從事_B"], ["電腦工程"])
+        try:
+            self.ppt_generator.create_section_slide("STEM學習項目對選科及就業取向影響")
+        except Exception as e:
+            st.error(f"Failed to create STEM section slide: {str(e)}")
+            
+        try:
+            self._process_page1()
+        except Exception as e:
+            st.error(f"Failed to process STEM page 1: {str(e)}")
+            
+        try:
+            self._process_page2()
+        except Exception as e:
+            st.error(f"Failed to process STEM page 2: {str(e)}")
+            
+        try:
+            self._process_major_or_job_page("STEM參與率不同下受歡迎主修科目分佈", ["希望修讀", "希望修讀_A", "希望修讀_B"], ["電腦工程", "電腦科學"])
+        except Exception as e:
+            st.error(f"Failed to process STEM popular majors page: {str(e)}")
+            
+        try:
+            self._process_major_or_job_page("STEM參與率不同下不受歡迎主修科目分佈", ["不希望修讀", "不希望修讀_A", "不希望修讀_B"], ["數學"])
+        except Exception as e:
+            st.error(f"Failed to process STEM unpopular majors page: {str(e)}")
+            
+        try:
+            self._process_major_or_job_page("STEM參與率不同下受歡迎職業分佈", ["希望從事", "希望從事_A", "希望從事_B"], ["資訊科技", "電腦工程"])
+        except Exception as e:
+            st.error(f"Failed to process STEM popular jobs page: {str(e)}")
+            
+        try:
+            self._process_major_or_job_page("STEM參與率不同下不受歡迎職業分佈", ["不希望從事", "不希望從事_A", "不希望從事_B"], ["電腦工程"])
+        except Exception as e:
+            st.error(f"Failed to process STEM unpopular jobs page: {str(e)}")

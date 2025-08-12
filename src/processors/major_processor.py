@@ -1,4 +1,5 @@
 import pandas as pd 
+import streamlit as st
 from data_reader import DataReader
 from ppt_generator import PptGenerator
 from pptx.enum.chart import XL_LEGEND_POSITION
@@ -270,8 +271,27 @@ class MajorProcessor:
 
 
     def process_major_pages(self):
-        self._process_page1()
-        self._process_page2()
-        self._process_page3()
-        self._process_least_popular_major()
-        self._process_page4()
+        try:
+            self._process_page1()
+        except Exception as e:
+            st.error(f"Failed to process popular majors page 1: {str(e)}")
+            
+        try:
+            self._process_page2()
+        except Exception as e:
+            st.error(f"Failed to process popular majors page 2: {str(e)}")
+            
+        try:
+            self._process_page3()
+        except Exception as e:
+            st.error(f"Failed to process unpopular majors page 3: {str(e)}")
+            
+        try:
+            self._process_least_popular_major()
+        except Exception as e:
+            st.error(f"Failed to process least popular major page: {str(e)}")
+            
+        try:
+            self._process_page4()
+        except Exception as e:
+            st.error(f"Failed to process unpopular majors page 4: {str(e)}")

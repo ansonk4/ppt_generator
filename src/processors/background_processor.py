@@ -1,4 +1,5 @@
 import pandas as pd
+import streamlit as st
 from data_reader import DataReader
 from ppt_generator import PptGenerator
 from pptx.enum.chart import XL_LEGEND_POSITION
@@ -151,6 +152,17 @@ class BackgroundProcessor:
 
     def process_background_pages(self):
         """Generate all background pages in sequence."""
-        self._process_background_page1()
-        self._process_background_page23()
-        self._process_background_page4()
+        try:
+            self._process_background_page1()
+        except Exception as e:
+            st.error(f"Failed to process background page 1: {str(e)}")
+            
+        try:
+            self._process_background_page23()
+        except Exception as e:
+            st.error(f"Failed to process background pages 2-3: {str(e)}")
+            
+        try:
+            self._process_background_page4()
+        except Exception as e:
+            st.error(f"Failed to process background page 4: {str(e)}")

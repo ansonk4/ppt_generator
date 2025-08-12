@@ -1,4 +1,5 @@
 import pandas as pd
+import streamlit as st
 from data_reader import DataReader
 from ppt_generator import PptGenerator
 from pptx.enum.chart import XL_LEGEND_POSITION
@@ -253,14 +254,45 @@ class AfterDSEProcessor:
         )
 
     def process_after_dse_pages(self):
-        self.ppt_generator.create_section_slide("考生升學意向、選科取向")
-        self._process_page1()
-        self._process_page2()
-        self._process_page34()
-        self._process_page56()
-        self._process_page7()
-        self._process_page8()
-        self._process_page9()
+        try:
+            self.ppt_generator.create_section_slide("考生升學意向、選科取向")
+        except Exception as e:
+            st.error(f"Failed to create after DSE section slide: {str(e)}")
+            
+        try:
+            self._process_page1()
+        except Exception as e:
+            st.error(f"Failed to process after DSE page 1: {str(e)}")
+            
+        try:
+            self._process_page2()
+        except Exception as e:
+            st.error(f"Failed to process after DSE page 2: {str(e)}")
+            
+        try:
+            self._process_page34()
+        except Exception as e:
+            st.error(f"Failed to process after DSE pages 3-4: {str(e)}")
+            
+        try:
+            self._process_page56()
+        except Exception as e:
+            st.error(f"Failed to process after DSE pages 5-6: {str(e)}")
+            
+        try:
+            self._process_page7()
+        except Exception as e:
+            st.error(f"Failed to process after DSE page 7: {str(e)}")
+            
+        try:
+            self._process_page8()
+        except Exception as e:
+            st.error(f"Failed to process after DSE page 8: {str(e)}")
+            
+        try:
+            self._process_page9()
+        except Exception as e:
+            st.error(f"Failed to process after DSE page 9: {str(e)}")
 
 
 

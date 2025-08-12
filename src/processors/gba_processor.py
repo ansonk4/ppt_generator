@@ -1,4 +1,5 @@
 import pandas as pd 
+import streamlit as st
 from data_reader import DataReader
 from ppt_generator import PptGenerator
 from pptx.enum.chart import XL_LEGEND_POSITION
@@ -35,6 +36,7 @@ class GBAProcessor:
             has_data_labels=True,
             x=5, y=2, cx=4, cy=4
         )
+
 
 
 
@@ -153,14 +155,38 @@ class GBAProcessor:
         )
 
     def process_gba_pages(self):
-        self.ppt_generator.create_section_slide("大灣區政策對選科及就業取向影響")
-        self._process_page1()
-        self._process_page2()
-
-        self._process_gba_major_or_job_page("對大灣區政策了解不同程度下受歡迎科目", ["希望修讀", "希望修讀_A", "希望修讀_B"], ["金融"])
-        self._process_gba_major_or_job_page("對大灣區政策了解程度不同下不受歡迎科目", ["不希望修讀", "不希望修讀_A", "不希望修讀_B"], ["法律"])
-        self._process_gba_major_or_job_page("對大灣區政策了解程度不同下受歡職業", ["希望從事", "希望從事_A", "希望從事_B"], ["銀行/金融", "創業"])
-        # self._process_major_or_job_page("不受歡迎職業", ["不希望從事", "不希望從事_A", "不希望從事_B"], [24])
-
-        self._process_gba_page3()
+        try:
+            self.ppt_generator.create_section_slide("大灣區政策對選科及就業取向影響")
+        except Exception as e:
+            st.error(f"Failed to create GBA section slide: {str(e)}")
+            
+        try:
+            self._process_page1()
+        except Exception as e:
+            st.error(f"Failed to process GBA page 1: {str(e)}")
+            
+        try:
+            self._process_page2()
+        except Exception as e:
+            st.error(f"Failed to process GBA page 2: {str(e)}")
+            
+        try:
+            self._process_gba_major_or_job_page("對大灣區政策了解不同程度下受歡迎科目", ["希望修讀", "希望修讀_A", "希望修讀_B"], ["金融"])
+        except Exception as e:
+            st.error(f"Failed to process GBA popular majors page: {str(e)}")
+            
+        try:
+            self._process_gba_major_or_job_page("對大灣區政策了解程度不同下不受歡迎科目", ["不希望修讀", "不希望修讀_A", "不希望修讀_B"], ["法律"])
+        except Exception as e:
+            st.error(f"Failed to process GBA unpopular majors page: {str(e)}")
+            
+        try:
+            self._process_gba_major_or_job_page("對大灣區政策了解程度不同下受歡職業", ["希望從事", "希望從事_A", "希望從事_B"], ["銀行/金融", "創業"])
+        except Exception as e:
+            st.error(f"Failed to process GBA popular jobs page: {str(e)}")
+            
+        try:
+            self._process_gba_page3()
+        except Exception as e:
+            st.error(f"Failed to process GBA page 3: {str(e)}")
         

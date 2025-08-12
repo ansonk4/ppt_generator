@@ -1,4 +1,5 @@
 import pandas as pd 
+import streamlit as st
 from data_reader import DataReader
 from ppt_generator import PptGenerator
 from pptx.enum.chart import XL_LEGEND_POSITION
@@ -375,25 +376,77 @@ class JobProcessor:
         )
     
     def process_job_pages(self):
-        self.ppt_generator.create_section_slide("考生未來工作取向")
-        self._process_page1()
+        try:
+            self.ppt_generator.create_section_slide("考生未來工作取向")
+        except Exception as e:
+            st.error(f"Failed to create job section slide: {str(e)}")
+            
+        try:
+            self._process_page1()
+        except Exception as e:
+            st.error(f"Failed to process job page 1: {str(e)}")
 
-        self._process_page_filtered_by_location("香港")
-        self._process_page_filtered_by_location("內地")
-        self._process_page_filtered_by_location("亞洲")
-        self._process_page_filtered_by_location("歐美澳")
+        try:
+            self._process_page_filtered_by_location("香港")
+        except Exception as e:
+            st.error(f"Failed to process job page for Hong Kong: {str(e)}")
+            
+        try:
+            self._process_page_filtered_by_location("內地")
+        except Exception as e:
+            st.error(f"Failed to process job page for Mainland China: {str(e)}")
+            
+        try:
+            self._process_page_filtered_by_location("亞洲")
+        except Exception as e:
+            st.error(f"Failed to process job page for Asia: {str(e)}")
+            
+        try:
+            self._process_page_filtered_by_location("歐美澳")
+        except Exception as e:
+            st.error(f"Failed to process job page for Europe/America/Australia: {str(e)}")
 
-        self._process_page2()
+        try:
+            self._process_page2()
+        except Exception as e:
+            st.error(f"Failed to process job page 2: {str(e)}")
 
-        self._process_major_preference_page("受歡迎職業", ["希望從事", "希望從事_A", "希望從事_B"])
-        self.ppt_generator.create_blank_slide("受歡迎職業走勢")
-        self._process_gender_major_preference_page("受男女歡迎職業排名", ["希望從事", "希望從事_A", "希望從事_B"])
+        try:
+            self._process_major_preference_page("受歡迎職業", ["希望從事", "希望從事_A", "希望從事_B"])
+        except Exception as e:
+            st.error(f"Failed to process popular jobs page: {str(e)}")
+            
+        try:
+            self.ppt_generator.create_blank_slide("受歡迎職業走勢")
+        except Exception as e:
+            st.error(f"Failed to create popular jobs trend slide: {str(e)}")
+            
+        try:
+            self._process_gender_major_preference_page("受男女歡迎職業排名", ["希望從事", "希望從事_A", "希望從事_B"])
+        except Exception as e:
+            st.error(f"Failed to process gender-based popular jobs page: {str(e)}")
         
-        self._process_major_preference_page("不受歡迎職業", ["不希望從事", "不希望從事_A", "不希望從事_B"])
-        self.ppt_generator.create_blank_slide("不受歡迎職業走勢")
+        try:
+            self._process_major_preference_page("不受歡迎職業", ["不希望從事", "不希望從事_A", "不希望從事_B"])
+        except Exception as e:
+            st.error(f"Failed to process unpopular jobs page: {str(e)}")
+            
+        try:
+            self.ppt_generator.create_blank_slide("不受歡迎職業走勢")
+        except Exception as e:
+            st.error(f"Failed to create unpopular jobs trend slide: {str(e)}")
 
-        self._process_least_popular_job()
+        try:
+            self._process_least_popular_job()
+        except Exception as e:
+            st.error(f"Failed to process least popular job page: {str(e)}")
 
-        self._process_gender_major_preference_page("不受男女歡迎職業排名", ["不希望從事", "不希望從事_A", "不希望從事_B"])
+        try:
+            self._process_gender_major_preference_page("不受男女歡迎職業排名", ["不希望從事", "不希望從事_A", "不希望從事_B"])
+        except Exception as e:
+            st.error(f"Failed to process gender-based unpopular jobs page: {str(e)}")
 
-        self._process_page5()
+        try:
+            self._process_page5()
+        except Exception as e:
+            st.error(f"Failed to process job page 5: {str(e)}")

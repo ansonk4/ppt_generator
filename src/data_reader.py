@@ -52,6 +52,9 @@ class DataReader:
                 mask = data[filter_column].eq(filter_value).any(axis=1)
                 data = data[mask]
 
+        if len(data) == 0:
+            raise ValueError(f"No rows found after filtering for column {filter_column} == {filter_value}")
+
         if exclude is not None:
             data = data[data[column_name] != exclude]
         
@@ -80,21 +83,18 @@ class DataReader:
         return_dict: bool = True
     ) -> dict[str, float] | pd.DataFrame:
         result = {}
-
         data = self.data
         if filter_column is not None and filter_value is not None:
             data = self.data[self.data[filter_column] == filter_value]
-
         data = data.dropna(subset=columns)
+
+        if len(data) == 0:
+            raise ValueError(f"No rows found after filtering for column {filter_column} == {filter_value}")
 
         # Drop rows where more than one target value exists in the specified columns
         if unique:
             target_mask = data[columns].apply(lambda row: (pd.to_numeric(row, errors='coerce') == value).sum(), axis=1)
             data = data[target_mask <= 1]
-
-        if len(data) == 0:
-            print("No valid rows found in the DataFrame.")
-            return result
             
         for col in columns:
             if col not in data.columns:
@@ -133,6 +133,9 @@ class DataReader:
         data = self.data
         if filtered_column is not None and filter_value is not None:
             data = data[data[filtered_column] == filter_value]
+
+        if len(data) == 0:
+            raise ValueError(f"No rows found after filtering for column {filtered_column} == {filter_value}")
 
         total_count = len(data)
 

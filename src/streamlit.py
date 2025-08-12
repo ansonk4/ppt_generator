@@ -10,12 +10,11 @@ import traceback
 from presentation_generator import Config, PresentationGenerator
 
 def display_validation_errors(validation_results: list[dict]) -> None:
+    st.error("❌ Invalid Data Found")
     try:
         for result_dict in validation_results:
             if not result_dict:  # If the dictionary is not empty
                 continue
-
-            st.warning("❌ Invalid Data Found")
             
             for column, invalid_entries in result_dict.items():
                 if column == "acceptable_values":
@@ -60,6 +59,28 @@ def main():
     st.title("📊 DSE考生問卷調查 PowerPoint Generator")
     st.markdown("Upload your Excel file to generate a PowerPoint presentation for DSE survey analysis.")
     
+    # Sample data download
+    st.markdown("### 📥 Download Sample Data")
+    st.markdown("Need a template? Download our sample Excel file to see the expected format:")
+    
+    # Read sample file for download
+    sample_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sample_data", "sample.xlsx")
+    if os.path.exists(sample_file_path):
+        with open(sample_file_path, 'rb') as f:
+            sample_data = f.read()
+        
+        st.download_button(
+            label="📄 Download Sample Excel File",
+            data=sample_data,
+            file_name="dse_survey_sample.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            help="Download this sample file to understand the expected data format"
+        )
+    else:
+        st.warning("Sample file not found at the expected location.")
+    
+    st.markdown("---")
+    
     # File upload
     uploaded_file = st.file_uploader(
         "Choose an Excel file",
@@ -67,6 +88,7 @@ def main():
         help="Upload the Excel file containing DSE survey data"
     )
 
+    
     if uploaded_file is not None:
         # Create temporary file for the uploaded data
         
