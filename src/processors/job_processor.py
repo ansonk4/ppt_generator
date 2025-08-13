@@ -164,17 +164,18 @@ class JobProcessor:
 
         jobs = job_data[cols[0]].tolist()
         distribution = job_data["distribution"].tolist()
-        text = (
-            f"第一位 {jobs[0]} {distribution[0]*100:.1f}%\n",
-            f"第二位 {jobs[1]} {distribution[1]*100:.1f}%\n",
-            f"第三位 {jobs[2]} {distribution[2]*100:.1f}%\n",
-            f"第四位 {jobs[3]} {distribution[3]*100:.1f}%\n",
-            f"第五位 {jobs[4]} {distribution[4]*100:.1f}%\n",
-        )
-        self.ppt_generator.add_textbox(
-            "\n".join(text),
-            x=0.5, cx=3, font_size=19
-        )
+        if len(jobs) >= 5:
+            text = (
+                f"第一位 {jobs[0]} {distribution[0]*100:.1f}%\n",
+                f"第二位 {jobs[1]} {distribution[1]*100:.1f}%\n",
+                f"第三位 {jobs[2]} {distribution[2]*100:.1f}%\n",
+                f"第四位 {jobs[3]} {distribution[3]*100:.1f}%\n",
+                f"第五位 {jobs[4]} {distribution[4]*100:.1f}%\n",
+            )
+            self.ppt_generator.add_textbox(
+                "\n".join(text),
+                x=0.5, cx=3, font_size=19
+            )
 
 
     def _process_gender_major_preference_page(self, title: str, cols: list[str]):

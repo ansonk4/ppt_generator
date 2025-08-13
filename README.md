@@ -167,7 +167,6 @@ The following columns **must** be present in your Excel file:
 
 
 --- 
-
 ### Value Validation Rules
 
 The following columns must only contain values from the specified lists:
@@ -236,6 +235,10 @@ Columns: `浸會大學`, `中文大學`, `城市大學`, `教育大學`, `恒生
 - `1` (Yes/Selected)
 - `0` (No/Not Selected)
 
+### Great Bay Area
+Columns: `個人興趣及性格_gba`, `個人能力_gba`, `晉升機會_gba`, `工作性質_gba`, `行業前景_gba`, `工作環境_gba`, `工作量_gba`, `薪水福利_gba`, `生活成本_gba`, `國家貢獻_gba`
+- `1` (Yes/Selected)
+- `0` (No/Not Selected)
 ---
 
 **The following columns must have at least one (but not limited to) values from the specified lists:**

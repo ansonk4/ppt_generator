@@ -73,8 +73,14 @@ class DataValidator:
         validation_result.append(self._validate_col("從事相關工作", ["絕對不會", "可能不會", "不確定", "可能會", "絕對會"]))
         validation_result.append(self._validate_col([
             "浸會大學", "中文大學", "城市大學", "教育大學", "恒生大學", "香港大學",
-            "嶺南大學", "都會大學", "理工大學", "聖方濟各大學", "樹仁大學", "科技大學", "自資學院"],
-            [1, 0]
+            "嶺南大學", "都會大學", "理工大學", "聖方濟各大學", "樹仁大學", "科技大學", "自資學院"
+        ], [1, 0]
+        ))
+
+        validation_result.append(self._validate_col([
+            "個人興趣及性格_gba", "個人能力_gba", "晉升機會_gba", "工作性質_gba", "行業前景_gba",
+            "工作環境_gba", "工作量_gba", "薪水福利_gba", "生活成本_gba", "國家貢獻_gba"
+        ], [1, 0]
         ))
 
         return validation_result

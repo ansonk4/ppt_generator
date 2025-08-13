@@ -17,7 +17,6 @@ class MajorProcessor:
             ["希望修讀", "希望修讀_A", "希望修讀_B"],
         )[:5]
 
-
         self.ppt_generator.add_bar_chart(
             data,
             "希望修讀",
@@ -112,17 +111,19 @@ class MajorProcessor:
 
         major = data["不希望修讀"].tolist()
         distribution = data["distribution"].tolist()
-        text = (
-            f"第一位 {major[0]} {distribution[0]*100:.1f}%\n",
-            f"第二位 {major[1]} {distribution[1]*100:.1f}%\n",
-            f"第三位 {major[2]} {distribution[2]*100:.1f}%\n",
-            f"第四位 {major[3]} {distribution[3]*100:.1f}%\n",
-            f"第五位 {major[4]} {distribution[4]*100:.1f}%\n",
-        )
-        self.ppt_generator.add_textbox(
-            "\n".join(text),
-            x=0.5, cx=3, font_size=19
-        )
+        
+        if len(major) >= 5:
+            text = (
+                f"第一位 {major[0]} {distribution[0]*100:.1f}%\n",
+                f"第二位 {major[1]} {distribution[1]*100:.1f}%\n",
+                f"第三位 {major[2]} {distribution[2]*100:.1f}%\n",
+                f"第四位 {major[3]} {distribution[3]*100:.1f}%\n",
+                f"第五位 {major[4]} {distribution[4]*100:.1f}%\n",
+            )
+            self.ppt_generator.add_textbox(
+                "\n".join(text),
+                x=0.5, cx=3, font_size=19
+            )
 
     def _process_least_popular_major(self):
 
@@ -262,13 +263,8 @@ class MajorProcessor:
                 x=4.7, y=3 + i * 0.75, cx=0.5, cy=0.5
             )
 
-
-    
-
         self.ppt_generator.add_img("img/male.png", x=3, y=1.5)
         self.ppt_generator.add_img("img/female.png", x=5.5, y=1.5)
-
-
 
     def process_major_pages(self):
         try:
