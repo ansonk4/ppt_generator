@@ -236,16 +236,18 @@ Columns: `浸會大學`, `中文大學`, `城市大學`, `教育大學`, `恒生
 - `1` (Yes/Selected)
 - `0` (No/Not Selected)
 
-The following columns must **have (but not limited to)** values from the specified lists:
+---
 
-Columns: - `希望修讀`, `希望修讀_A` , `希望修讀_B` , `不希望修讀`, `不希望修讀_A`, `不希望修讀_B`
+**The following columns must have at least one (but not limited to) values from the specified lists:**
+
+Columns: `希望修讀`, `希望修讀_A` , `希望修讀_B` , `不希望修讀`, `不希望修讀_A`, `不希望修讀_B`
 - `電腦工程`, 
 - `電腦科學`,
 - `數學`,
 - `金融`,
 - `法律`
 
-Columns: - `希望從事`, `希望從事_A` ,`希望從事_B` ,`不希望從事`,`不希望從事_A`,`不希望從事_B`:
+Columns: `希望從事`, `希望從事_A` ,`希望從事_B` ,`不希望從事`,`不希望從事_A`,`不希望從事_B`:
 - `資訊科技`,
 - `電腦工程`,
 - `銀行/金融`, 
