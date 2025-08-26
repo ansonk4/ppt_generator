@@ -85,7 +85,7 @@ class DataValidator:
 
         return validation_result
 
-    def _validate_col(self, column: str | list[str], acceptable_values: list[str]) -> dict[list[tuple[int, str]]]:
+    def _validate_col(self, column: str | list[str], acceptable_values: list[str]) -> dict[str, list[tuple[int, str]]]:
         """Validate if the column exists and contains acceptable values"""
         column = [column] if isinstance(column, str) else column
         acceptable_values = acceptable_values + [999] + [np.nan]
@@ -102,7 +102,3 @@ class DataValidator:
 
         return result
     
-    # def check_data_exist(self, columsn: str | list[str]) -> d
-
-    # 金融, 法律, "電腦工程", "電腦科學"
-    # 銀行/金融,

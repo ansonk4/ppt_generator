@@ -10,11 +10,9 @@ class DataReader:
         try:
             df = pd.read_excel(self.file_path)
 
-            # Replace both numeric 999 and string "999" with np.nan
-            df = df.replace([999, "999"], np.nan)
             df = df.map(lambda x: x.strip() if isinstance(x, str) else x)
-            # Replace any cell that is empty or contains only spaces with np.nan
             df = df.map(lambda x: np.nan if isinstance(x, str) and x.strip() == "" else x)
+            df = df.replace([999, "999"], np.nan)
 
             self.data = df
             print(f"Data read successfully from {self.file_path}")
